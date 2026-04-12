@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Metas • New York Store</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Mono', monospace; background: #090910; color: #ddd; min-height: 100vh; }
+  .grid-bg { position: fixed; inset: 0; z-index: 0; background-image: linear-gradient(#ffffff06 1px,transparent 1px),linear-gradient(90deg,#ffffff06 1px,transparent 1px); background-size: 36px 36px; pointer-events: none; }
+  .glow1 { position: fixed; top: -80px; left: -80px; width: 360px; height: 360px; border-radius: 50%; background: radial-gradient(circle,#00e5ff14 0%,transparent 70%); pointer-events: none; z-index: 0; }
+  .glow2 { position: fixed; bottom: -80px; right: -80px; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle,#c77dff12 0%,transparent 70%); pointer-events: none; z-index: 0; }
+  .wrap { position: relative; z-index: 1; max-width: 520px; margin: 0 auto; padding: 20px 14px 80px; }
+  .label { font-size: 10px; letter-spacing: 4px; color: #00e5ff; text-transform: uppercase; margin-bottom: 4px; }
+  h1 { font-size: 26px; font-weight: 700; color: #fff; letter-spacing: -1px; margin-bottom: 20px; }
+  .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .btn-atualizar { background: #00e5ff22; border: 1px solid #00e5ff44; border-radius: 8px; padding: 6px 14px; color: #00e5ff; font-size: 11px; font-family: inherit; cursor: pointer; }
+  .btn-atualizar:hover { background: #00e5ff33; }
+  .periodo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .periodo label { font-size: 9px; color: #555; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .periodo input { width: 100%; background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 8px 10px; color: #fff; font-size: 12px; font-family: inherit; }
+  .nav { display: flex; gap: 4px; background: #ffffff08; border-radius: 10px; padding: 4px; margin-bottom: 20px; }
+  .nav button { flex: 1; padding: 9px 4px; border: none; border-radius: 7px; font-size: 12px; font-family: inherit; cursor: pointer; transition: all .2s; background: transparent; color: #666; }
+  .nav button.active { background: #00e5ff; color: #000; font-weight: 700; }
+  .card { background: #ffffff06; border: 1px solid #ffffff10; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+  .card-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 10px; }
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .kpi { background: #ffffff06; border: 1px solid #ffffff10; border-radius: 10px; padding: 14px; }
+  .kpi-label { font-size: 10px; color: #555; margin-bottom: 4px; }
+  .kpi-value { font-size: 20px; font-weight: 700; color: #00e5ff; }
+  .vendedor-row { display: flex; align-items: center; gap: 12px; background: #ffffff05; border: 1px solid #ffffff0d; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; transition: all .2s; }
+  .vendedor-row.ativo { background: #00e5ff0f; border-color: #00e5ff44; }
+  .vendedor-nome { font-weight: 700; font-size: 14px; color: #ccc; }
+  .vendedor-row.ativo .vendedor-nome { color: #00e5ff; }
+  .vendedor-sub { font-size: 11px; color: #555; margin-top: 2px; }
+  .vendedor-fat { font-size: 15px; font-weight: 700; color: #888; text-align: right; }
+  .vendedor-row.ativo .vendedor-fat { color: #00e5ff; }
+  .vendedor-tm { font-size: 10px; color: #444; text-align: right; }
+  .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 10px; }
+  .stat { background: #ffffff07; border-radius: 8px; padding: 10px 8px; text-align: center; }
+  .stat-label { font-size: 9px; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+  .stat-value { font-size: 13px; font-weight: 700; color: #00e5ff; }
+  .bar-wrap { height: 5px; background: #ffffff10; border-radius: 3px; overflow: hidden; margin-top: 8px; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg,#00e5ff,#c77dff); border-radius: 3px; transition: width .8s ease; }
+  .ranking-item { background: #ffffff05; border: 1px solid #ffffff0d; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+  .ranking-item.top { background: #00e5ff0a; border-color: #00e5ff33; }
+  .ranking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .ranking-nome { font-weight: 700; color: #ccc; }
+  .ranking-item.top .ranking-nome { color: #00e5ff; }
+  .ranking-fat { font-size: 16px; font-weight: 700; color: #aaa; }
+  .ranking-item.top .ranking-fat { color: #00e5ff; }
+  .ranking-pct { font-size: 10px; color: #444; }
+  .form-section { background: #ffffff06; border: 1px solid #ffffff0d; border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+  .form-section-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-label { font-size: 9px; color: #555; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .form-input { width: 100%; background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 9px 10px; color: #fff; font-size: 14px; font-family: inherit; }
+  .form-select { width: 100%; background: #111; border: 1px solid #333; border-radius: 8px; padding: 10px 8px; color: #fff; font-size: 13px; font-family: inherit; }
+  .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .check-item { display: flex; align-items: center; gap: 10px; background: #ffffff05; border: 1px solid #1a1a1a; border-radius: 8px; padding: 10px 12px; cursor: pointer; transition: all .2s; }
+  .check-item.checked { background: #c77dff14; border-color: #c77dff44; }
+  .check-box { width: 18px; height: 18px; border-radius: 5px; border: 2px solid #333; background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .2s; }
+  .check-item.checked .check-box { border-color: #c77dff; background: #c77dff; }
+  .check-label { font-size: 12px; color: #666; }
+  .check-item.checked .check-label { color: #c77dff; }
+  .btn-salvar { width: 100%; padding: 14px; background: linear-gradient(90deg,#00e5ff,#00b8cc); border: none; border-radius: 10px; font-size: 14px; font-weight: 700; color: #000; font-family: inherit; cursor: pointer; margin-top: 10px; }
+  .loading { text-align: center; padding: 40px; }
+  .loading-icon { font-size: 28px; margin-bottom: 12px; }
+  .loading-text { font-size: 12px; color: #555; }
+  .loading-sub { font-size: 10px; color: #333; margin-top: 6px; }
+  .erro-box { background: #ff6b6b15; border: 1px solid #ff6b6b44; border-radius: 10px; padding: 14px; margin-bottom: 16px; font-size: 12px; color: #ff6b6b; }
+  .erro-box a { color: #00e5ff; }
+  .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999; border-radius: 10px; padding: 10px 20px; font-size: 13px; backdrop-filter: blur(10px); white-space: nowrap; display: none; }
+  .toast.ok { background: #00e5ff22; border: 1px solid #00e5ff66; color: #00e5ff; }
+  .toast.erro { background: #ff6b6b22; border: 1px solid #ff6b6b66; color: #ff6b6b; }
+  .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg,#00e5ff,#c77dff); z-index: 10; }
+  .gerentes-row { background: #ffffff03; border: 1px solid #ffffff08; border-radius: 10px; padding: 12px 16px; margin-top: 8px; display: flex; justify-content: space-between; font-size: 12px; color: #444; }
+  select option { background: #111; }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="glow1"></div>
+<div class="glow2"></div>
+<div class="toast" id="toast"></div>
+
+<div class="wrap">
+  <div class="label">New York Store • Bling Live</div>
+  <div class="header-row">
+    <h1>Dashboard</h1>
+    <button class="btn-atualizar" onclick="buscarDados()">↻ Atualizar</button>
+  </div>
+
+  <div class="periodo">
+    <div>
+      <label>De</label>
+      <input type="date" id="dataInicio">
+    </div>
+    <div>
+      <label>Até</label>
+      <input type="date" id="dataFim">
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="active" onclick="mudarAba('dashboard')">📊 Dashboard</button>
+    <button onclick="mudarAba('lancar')">➕ Lançar</button>
+    <button onclick="mudarAba('ranking')">🏆 Ranking</button>
+  </div>
+
+  <div id="erro-box" style="display:none" class="erro-box"></div>
+  <div id="loading" style="display:none" class="loading">
+    <div class="loading-icon">⏳</div>
+    <div class="loading-text">Buscando dados do Bling...</div>
+    <div class="loading-sub">Pode levar até 2 minutos</div>
+  </div>
+
+  <div id="aba-dashboard"></div>
+  <div id="aba-lancar" style="display:none"></div>
+  <div id="aba-ranking" style="display:none"></div>
+</div>
+
+<div class="bottom-bar"></div>
+
+<script>
+const BACKEND = "https://dashboard-metas.onrender.com";
+let dados = null;
+let vendedorSel = null;
+let operacional = [];
+let abaAtual = "dashboard";
+
+// Datas padrão
+const hoje = new Date().toISOString().slice(0,10);
+const inicioMes = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0,10);
+document.getElementById("dataInicio").value = inicioMes;
+document.getElementById("dataFim").value = hoje;
+
+function showToast(msg, tipo="ok") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = `toast ${tipo}`;
+  t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 3500);
+}
+
+function mudarAba(aba) {
+  abaAtual = aba;
+  document.querySelectorAll(".nav button").forEach((b,i) => {
+    b.classList.toggle("active", ["dashboard","lancar","ranking"][i] === aba);
+  });
+  document.getElementById("aba-dashboard").style.display = aba === "dashboard" ? "block" : "none";
+  document.getElementById("aba-lancar").style.display = aba === "lancar" ? "block" : "none";
+  document.getElementById("aba-ranking").style.display = aba === "ranking" ? "block" : "none";
+  if (aba === "lancar") renderLancar();
+  if (aba === "ranking") renderRanking();
+}
+
+async function buscarDados() {
+  const inicio = document.getElementById("dataInicio").value;
+  const fim = document.getElementById("dataFim").value;
+  document.getElementById("loading").style.display = "block";
+  document.getElementById("erro-box").style.display = "none";
+  document.getElementById("aba-dashboard").innerHTML = "";
+
+  try {
+    const res = await fetch(`${BACKEND}/vendas?dataInicio=${inicio}&dataFim=${fim}`);
+    const json = await res.json();
+    if (json.erro) throw new Error(json.erro);
+    dados = { ...json, vendedores: [...(json.vendedores||[])].sort((a,b) => b.faturamento - a.faturamento) };
+    vendedorSel = dados.vendedores.filter(v => v.nome !== "Gerentes")[0]?.nome || null;
+    renderDashboard();
+    if (abaAtual === "ranking") renderRanking();
+  } catch(e) {
+    const box = document.getElementById("erro-box");
+    box.style.display = "block";
+    if (e.message.includes("autenticado") || e.message.includes("fetch")) {
+      box.innerHTML = `⚠️ Backend desconectado. <a href="${BACKEND}/auth" target="_blank">Clique aqui para reconectar</a> e depois atualize.`;
+    } else {
+      box.textContent = "⚠️ " + e.message;
+    }
+  } finally {
+    document.getElementById("loading").style.display = "none";
+  }
+}
+
+function renderDashboard() {
+  if (!dados) return;
+  const vendedores = dados.vendedores.filter(v => v.nome !== "Gerentes");
+  const totalFat = vendedores.reduce((s,v) => s+v.faturamento, 0);
+  const medalhas = ["🥇","🥈","🥉","🏅","🏅"];
+
+  let html = `
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">💰 Faturamento Total</div><div class="kpi-value">R$ ${totalFat.toLocaleString("pt-BR",{maximumFractionDigits:0})}</div></div>
+      <div class="kpi"><div class="kpi-label">🛍 Total Pedidos</div><div class="kpi-value">${dados.totalPedidos}</div></div>
+    </div>
+    <div class="card-title">Vendedores</div>
+  `;
+
+  vendedores.forEach((v,i) => {
+    html += `
+      <div class="vendedor-row ${vendedorSel===v.nome?'ativo':''}" onclick="selecionarVendedor('${v.nome}')">
+        <div style="font-size:20px">${medalhas[i]||"🏅"}</div>
+        <div style="flex:1">
+          <div class="vendedor-nome">${v.nome}</div>
+          <div class="vendedor-sub">${v.pedidos} pedidos · ${v.pecas} peças</div>
+        </div>
+        <div>
+          <div class="vendedor-fat">R$ ${v.faturamento.toLocaleString("pt-BR",{maximumFractionDigits:0})}</div>
+          <div class="vendedor-tm">TM R$ ${v.ticketMedio.toLocaleString("pt-BR",{maximumFractionDigits:0})}</div>
+        </div>
+      </div>
+    `;
+  });
+
+  // Detalhe vendedor selecionado
+  const v = dados.vendedores.find(x => x.nome === vendedorSel);
+  if (v) {
+    const op = operacional.filter(r => r.vendedor === v.nome);
+    const scoreMedio = op.length > 0 ? (op.reduce((s,r) => s+[r.vmLoja,r.araras,r.vitrine,r.passadoria,r.cadastro,r.posVenda].filter(Boolean).length, 0) / op.length).toFixed(1) : "—";
+    const atLoja = op.reduce((s,r) => s+(Number(r.atendLoja)||0), 0);
+    const conv = atLoja > 0 ? Math.round(v.pedidos/atLoja*100)+"%" : "—";
+    html += `
+      <div class="card" style="margin-top:16px">
+        <div style="font-weight:700;font-size:15px;color:#fff;margin-bottom:12px">${v.nome} — Detalhe</div>
+        <div class="stats-grid">
+          <div class="stat"><div class="stat-label">Faturamento</div><div class="stat-value">R$ ${v.faturamento.toLocaleString("pt-BR",{maximumFractionDigits:0})}</div></div>
+          <div class="stat"><div class="stat-label">Ticket Médio</div><div class="stat-value">R$ ${v.ticketMedio.toLocaleString("pt-BR",{maximumFractionDigits:0})}</div></div>
+          <div class="stat"><div class="stat-label">Peças</div><div class="stat-value">${v.pecas}</div></div>
+          <div class="stat"><div class="stat-label">Pedidos</div><div class="stat-value">${v.pedidos}</div></div>
+          <div class="stat"><div class="stat-label">Score Op.</div><div class="stat-value">${scoreMedio !== "—" ? scoreMedio+"/6" : "—"}</div></div>
+          <div class="stat"><div class="stat-label">Conv. Loja</div><div class="stat-value">${conv}</div></div>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${Math.min(100,v.faturamento/totalFat*100)}%"></div></div>
+      </div>
+    `;
+  }
+
+  document.getElementById("aba-dashboard").innerHTML = html;
+}
+
+function selecionarVendedor(nome) {
+  vendedorSel = nome;
+  renderDashboard();
+}
+
+function renderRanking() {
+  if (!dados) { document.getElementById("aba-ranking").innerHTML = '<div style="color:#444;text-align:center;padding:40px">Carregue os dados primeiro</div>'; return; }
+  const vendedores = dados.vendedores.filter(v => v.nome !== "Gerentes");
+  const gerentes = dados.vendedores.find(v => v.nome === "Gerentes");
+  const totalFat = vendedores.reduce((s,v) => s+v.faturamento, 0);
+  const medalhas = ["🥇","🥈","🥉","🏅","🏅"];
+
+  let html = '<div class="card-title">🏆 Ranking por Faturamento</div>';
+  vendedores.forEach((v,i) => {
+    const pct = totalFat > 0 ? (v.faturamento/totalFat*100).toFixed(0) : 0;
+    html += `
+      <div class="ranking-item ${i===0?'top':''}">
+        <div class="ranking-header">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:22px">${medalhas[i]}</span>
+            <div>
+              <div class="ranking-nome">${v.nome}</div>
+              <div style="font-size:11px;color:#555">${v.pedidos} pedidos · TM R$ ${v.ticketMedio.toLocaleString("pt-BR",{maximumFractionDigits:0})}</div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div class="ranking-fat">R$ ${v.faturamento.toLocaleString("pt-BR",{maximumFractionDigits:0})}</div>
+            <div class="ranking-pct">${pct}% do total</div>
+          </div>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
+      </div>
+    `;
+  });
+
+  if (gerentes) {
+    html += `<div class="gerentes-row"><span>👔 Gerentes (Rafael + Lucas)</span><span>R$ ${gerentes.faturamento.toLocaleString("pt-BR",{maximumFractionDigits:0})} · ${gerentes.pedidos} ped</span></div>`;
+  }
+
+  document.getElementById("aba-ranking").innerHTML = html;
+}
+
+function renderLancar() {
+  const vendedoresNomes = dados?.vendedores?.filter(v => v.nome !== "Gerentes").map(v => v.nome) || ["Felipe","Giovana","Guilherme"];
+  const checks = [["vmLoja","VM Loja"],["araras","Araras"],["vitrine","Vitrine"],["passadoria","Passadoria"],["cadastro","Cadastro Produto"],["posVenda","Pós-venda"]];
+
+  document.getElementById("aba-lancar").innerHTML = `
+    <div class="label" style="margin-bottom:16px">➕ Lançamento Operacional</div>
+    <div style="font-size:11px;color:#444;margin-bottom:16px">Faturamento e pedidos vêm do Bling automaticamente. Aqui você lança só os dados operacionais do dia.</div>
+
+    <div class="form-grid" style="margin-bottom:10px">
+      <div>
+        <label class="form-label">Vendedor *</label>
+        <select id="f-vendedor" class="form-select">
+          <option value="">Selecionar...</option>
+          ${vendedoresNomes.map(v => `<option>${v}</option>`).join("")}
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Data *</label>
+        <input type="date" id="f-data" class="form-input" value="${hoje}">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title" style="color:#00e5ff">Atendimentos</div>
+      <div class="form-grid">
+        <div><label class="form-label">Atend. Loja</label><input type="number" id="f-atendLoja" class="form-input" placeholder="0" min="0"></div>
+        <div><label class="form-label">Atend. WhatsApp</label><input type="number" id="f-atendWhats" class="form-input" placeholder="0" min="0"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title" style="color:#c77dff">Score Operacional</div>
+      <div class="check-grid">
+        ${checks.map(([key,label]) => `
+          <div class="check-item" id="ci-${key}" onclick="toggleCheck('${key}')">
+            <div class="check-box" id="cb-${key}"></div>
+            <span class="check-label">${label}</span>
+          </div>
+        `).join("")}
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:#555;text-align:right">
+        Score: <span id="score-count" style="color:#c77dff;font-weight:700">0 / 6</span>
+      </div>
+    </div>
+
+    <button class="btn-salvar" onclick="salvarLancamento()">SALVAR LANÇAMENTO</button>
+  `;
+}
+
+const checkState = {};
+function toggleCheck(key) {
+  checkState[key] = !checkState[key];
+  const item = document.getElementById("ci-"+key);
+  const box = document.getElementById("cb-"+key);
+  item.classList.toggle("checked", checkState[key]);
+  box.textContent = checkState[key] ? "✓" : "";
+  box.style.color = "#000";
+  const total = Object.values(checkState).filter(Boolean).length;
+  document.getElementById("score-count").textContent = total + " / 6";
+}
+
+function salvarLancamento() {
+  const vendedor = document.getElementById("f-vendedor").value;
+  const data = document.getElementById("f-data").value;
+  if (!vendedor || !data) { showToast("Preencha vendedor e data!", "erro"); return; }
+  operacional.push({
+    vendedor, data,
+    atendLoja: document.getElementById("f-atendLoja").value,
+    atendWhats: document.getElementById("f-atendWhats").value,
+    ...checkState
+  });
+  Object.keys(checkState).forEach(k => { checkState[k] = false; });
+  showToast(`✅ Lançamento de ${vendedor} salvo!`);
+  mudarAba("dashboard");
+  renderDashboard();
+}
+
+// Iniciar
+buscarDados();
+</script>
+</body>
+</html>
