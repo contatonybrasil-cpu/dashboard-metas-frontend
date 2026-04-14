@@ -304,7 +304,7 @@ function renderDashboard() {
   vendedores.forEach(function(v,i){
     var pct = totalFat>0 ? v.faturamento/totalFat*100 : 0;
     html += '<div class="vendedor-card '+(vendedorSel===v.nome?'active':'')+'" onclick="selecionarVendedor(\''+v.nome+'\''+')">';
-    html += '<div class="vc-row"><div class="vc-left"><div class="vc-medal">'+medals[i]+'</div><div><div class="vc-nome">'+v.nome+'</div><div class="vc-sub">'+v.pedidos+' ped · '+v.pecas+' peças</div></div></div>';
+    html += '<div class="vc-row"><div class="vc-left"><div class="vc-medal">'+medals[i]+'</div><div><div class="vc-nome">'+v.nome+'</div><div class="vc-sub">'+v.pedidos+' ped · '+v.pecas+' peças · PA '+(v.pedidos>0?(v.pecas/v.pedidos).toFixed(1):"—")+'</div></div></div>';
     html += '<div><div class="vc-fat">R$ '+fmt(v.faturamento)+'</div><div class="vc-tm">TM R$ '+fmt(v.ticketMedio)+'</div></div></div>';
     html += '<div class="vc-bar"><div class="vc-bar-fill" style="width:'+pct.toFixed(1)+'%"></div></div>';
     html += '</div>';
@@ -327,8 +327,9 @@ function renderDashboard() {
     html += '<div class="section-title">'+v.nome+' — Detalhe</div>';
     html += '<div class="card">';
     html += '<div class="detalhe-grid" style="margin-bottom:16px">';
+    var pa = v.pedidos > 0 ? (v.pecas/v.pedidos).toFixed(1) : "—";
     [["Faturamento","R$ "+fmt(v.faturamento)],["Ticket Médio","R$ "+fmt(v.ticketMedio)],["Peças",fmt(v.pecas)],
-     ["Pedidos",fmt(v.pedidos)],["Score Op.",scoreMedio!=="—"?scoreMedio+"/6":"—"],["Conv. Loja",conv]
+     ["Pedidos",fmt(v.pedidos)],["PA (peças/ped)",pa],["Score Op.",scoreMedio!=="—"?scoreMedio+"/6":"—"]
     ].forEach(function(s){
       html += '<div class="ds"><div class="ds-label">'+s[0]+'</div><div class="ds-val">'+s[1]+'</div></div>';
     });
@@ -377,7 +378,7 @@ function renderRanking() {
     var pct = totalFat>0 ? (v.faturamento/totalFat*100).toFixed(1) : 0;
     html += '<div class="rk-card '+(i===0?'top1':'')+'">';
     html += '<div class="rk-header">';
-    html += '<div class="rk-left"><div class="rk-medal">'+medals[i]+'</div><div><div class="rk-nome">'+v.nome+'</div><div class="rk-sub">'+v.pedidos+' pedidos · '+v.pecas+' peças · TM R$ '+fmt(v.ticketMedio)+'</div></div></div>';
+    html += '<div class="rk-left"><div class="rk-medal">'+medals[i]+'</div><div><div class="rk-nome">'+v.nome+'</div><div class="rk-sub">'+v.pedidos+' pedidos · '+v.pecas+' peças · PA '+(v.pedidos>0?(v.pecas/v.pedidos).toFixed(1):"—")+' · TM R$ '+fmt(v.ticketMedio)+'</div></div></div>';
     html += '<div style="text-align:right"><div class="rk-fat">R$ '+fmt(v.faturamento)+'</div><div class="rk-pct">'+pct+'% do total</div></div>';
     html += '</div>';
     html += '<div class="rk-bar"><div class="rk-bar-fill" style="width:'+pct+'%"></div></div>';
