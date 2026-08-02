@@ -98,6 +98,32 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .avatar img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 .avatar.sm { width: 28px; height: 28px; font-size: 12px; }
 .avatar.lg { width: 52px; height: 52px; font-size: 22px; }
+.avatar.xl { width: 64px; height: 64px; font-size: 26px; }
+
+/* ⭐ MELHOR DA SEMANA */
+.mds { position: relative; background: linear-gradient(135deg, rgba(240,180,41,0.10), rgba(240,180,41,0.02) 55%, transparent); border: 1px solid rgba(240,180,41,0.38); border-radius: 14px; padding: 20px 18px 18px; margin-bottom: 20px; }
+.mds-badge { position: absolute; top: -9px; left: 18px; background: var(--gold); color: #0f0f12; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; padding: 3px 11px; border-radius: 20px; white-space: nowrap; }
+.mds-corpo { display: flex; align-items: center; gap: 16px; }
+@media (max-width: 620px) { .mds-corpo { flex-wrap: wrap; gap: 12px; } }
+.mds .avatar { border-color: rgba(240,180,41,0.55); box-shadow: 0 0 0 3px rgba(240,180,41,0.13); }
+.mds-info { flex: 1; min-width: 130px; }
+.mds-nome { font-size: 21px; font-weight: 800; color: var(--gold2); letter-spacing: -0.5px; line-height: 1.15; }
+.mds-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+.mds-vantagem { font-size: 11px; color: var(--cyan); font-weight: 600; margin-top: 5px; }
+.mds-nums { text-align: right; min-width: 165px; flex-shrink: 0; }
+@media (max-width: 620px) { .mds-nums { text-align: left; width: 100%; } }
+.mds-fat { font-size: 27px; font-weight: 900; color: var(--gold); letter-spacing: -1px; line-height: 1; }
+.mds-meta-l { font-size: 11px; color: var(--text3); margin-top: 5px; }
+.mds-meta-l b { font-weight: 800; }
+.mds-meta-l b.ok { color: var(--cyan); }
+.mds-meta-l b.warn { color: var(--gold); }
+.mds-meta-l b.danger { color: var(--red); }
+.mds-bar { height: 5px; background: var(--border2); border-radius: 3px; overflow: hidden; margin-top: 7px; }
+.mds-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+.mds-bar-fill.ok { background: var(--cyan); }
+.mds-bar-fill.warn { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+.mds-bar-fill.danger { background: var(--red); }
+.mds-vazio { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text3); padding: 16px 18px; }
 
 /* VENDEDORES */
 .vendedores-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
@@ -506,6 +532,8 @@ const ABAS = [
 let dados = null;      // período dos seletores de data (Dashboard / Ranking)
 let dadosHoje = null;  // apenas o dia de hoje
 let dadosMes = null;   // mês corrente completo
+let dadosSemana = null; // semana corrente (segunda a hoje)
+let semanaErro = null;
 let hist = null;       // /historico
 let histErro = null;
 let carregandoHist = false;
@@ -524,6 +552,18 @@ function diasNoMes(a,m){ return new Date(a,m+1,0).getDate(); }
 function fmtDM(s){ var d=dt(s); return pad2(d.getDate())+"/"+pad2(d.getMonth()+1); }
 function fmtLongo(s){ var d=dt(s); return DIAS[d.getDay()]+", "+d.getDate()+" de "+MESES[d.getMonth()]; }
 function primeiroDiaMes(){ var d=new Date(); return ymd(new Date(d.getFullYear(), d.getMonth(), 1)); }
+// Semana comercial: segunda a domingo
+function segundaDaSemana(dataStr){
+  var d = dt(dataStr || hojeStr());
+  var ds = d.getDay();                    // 0 = domingo
+  return ymd(addD(d, ds===0 ? -6 : 1-ds));
+}
+function domingoDaSemana(dataStr){ return ymd(addD(dt(segundaDaSemana(dataStr)), 6)); }
+function diasDaSemana(dataStr){
+  var ini = dt(segundaDaSemana(dataStr)), out = [];
+  for(var i=0;i<7;i++) out.push(ymd(addD(ini,i)));
+  return out;
+}
 
 const hoje = hojeStr();
 document.getElementById("dataInicio").value = primeiroDiaMes();
@@ -1104,6 +1144,28 @@ async function garantirMes(forcar){
   } finally { carregandoMes = false; }
 }
 
+// A semana precisa de busca própria: /vendas devolve o faturamento por
+// vendedor só no total do período, e a série diária vem no nível da loja —
+// não dá para recortar a semana a partir do período selecionado.
+let carregandoSemana = false;
+async function garantirSemana(forcar){
+  if(carregandoSemana) return;
+  if(dadosSemana && !forcar) return;
+  carregandoSemana = true;
+  try {
+    var ini = segundaDaSemana(hoje);
+    var fim = domingoDaSemana(hoje);
+    if(fim > hoje) fim = hoje;             // não pede dias que ainda não aconteceram
+    dadosSemana = await pegarVendas(ini, fim);
+    semanaErro = null;
+  } catch(e){
+    semanaErro = e.message;
+  } finally {
+    carregandoSemana = false;
+    if(abaAtual==="dashboard") buildDashboard();
+  }
+}
+
 async function garantirHist(forcar){
   if(carregandoHist) return;
   if(hist && !forcar) return;
@@ -1124,9 +1186,10 @@ async function garantirHist(forcar){
 }
 
 async function atualizarTudo(){
-  dadosHoje = null; dadosMes = null;
+  dadosHoje = null; dadosMes = null; dadosSemana = null;
   await buscarDados();
   garantirHoje(true);
+  garantirSemana(true);
   if(["semana","mes","sazonalidade","metas"].indexOf(abaAtual)>-1) garantirHist(true);
 }
 
@@ -1159,6 +1222,8 @@ function buildDashboard(){
   h += '<div class="kpi"><div class="kpi-label">👗 Peças</div><div class="kpi-num cyan">'+R(pecasTotal)+'</div><div class="kpi-meta">itens vendidos</div></div>';
   h += '<div class="kpi"><div class="kpi-label">🎯 Ticket Médio</div><div class="kpi-num">R$ '+R(tmGeral)+'</div><div class="kpi-meta">PA '+paGeral.toFixed(1)+' peças/ped</div></div>';
   h += '</div>';
+
+  h += melhorDaSemanaHTML();
 
   h += '<div class="main-grid animate">';
   h += '<div class="charts-col">';
@@ -1233,6 +1298,76 @@ function buildDashboard(){
     ]},
     options:Object.assign({},CO_BASE,{ plugins:{ legend:{ display:true, labels:{ color:"#8b8a94", font:{size:11}, boxWidth:10, boxHeight:10 } } } })
   });
+}
+
+/* ══ CARD: ⭐ MELHOR DA SEMANA ══════════════════════════════════════ */
+// Meta da semana = soma das metas diárias de segunda a domingo. Já sai
+// ponderada pelo peso de cada dia da semana e atravessa a virada de mês.
+function metaSemanaV(nome, lojaId){
+  return diasDaSemana(hoje).reduce(function(s,d){ return s+metaDiaV(nome,lojaId,d); },0);
+}
+
+function melhorDaSemana(){
+  if(!dadosSemana) return null;
+  var lista = NOMES_V.map(function(nome){
+    return {
+      nome: nome,
+      faturamento: fatV(dadosSemana, nome, lojaSel),
+      pedidos: pedV(dadosSemana, nome, lojaSel),
+      meta: metaSemanaV(nome, lojaSel)
+    };
+  }).filter(function(v){ return v.faturamento > 0; });
+  if(!lista.length) return null;
+  lista.sort(function(a,b){
+    if(b.faturamento !== a.faturamento) return b.faturamento-a.faturamento;
+    if(b.pedidos !== a.pedidos) return b.pedidos-a.pedidos;   // desempate por volume
+    return a.nome.localeCompare(b.nome,"pt-BR");
+  });
+  return { campeao: lista[0], vice: lista[1] || null, total: lista.length };
+}
+
+function melhorDaSemanaHTML(){
+  var ini = segundaDaSemana(hoje), fim = domingoDaSemana(hoje);
+  var periodo = fmtDM(ini)+" a "+fmtDM(fim);
+
+  if(carregandoSemana && !dadosSemana){
+    return '<div class="mds mds-vazio animate"><div class="spinner" style="width:20px;height:20px;margin:0"></div>'+
+           '<span>Apurando a semana de '+periodo+'...</span></div>';
+  }
+  if(!dadosSemana){
+    if(!semanaErro) return "";
+    return '<div class="mds mds-vazio animate"><span>⚠️ Não foi possível apurar a semana ('+semanaErro+').</span></div>';
+  }
+
+  var r = melhorDaSemana();
+  if(!r) return '<div class="mds mds-vazio animate"><span>Nenhuma venda registrada na semana de '+periodo+' em '+nomeLoja(lojaSel)+'.</span></div>';
+
+  var c = r.campeao;
+  var pct = c.meta>0 ? c.faturamento/c.meta*100 : null;
+  var nivel = pct==null ? null : (pct>=100 ? "ok" : pct>=70 ? "warn" : "danger");
+  var vantagem = r.vice ? c.faturamento-r.vice.faturamento : 0;
+
+  var h = '<div class="mds animate">';
+  h += '<div class="mds-badge">⭐ Melhor da Semana</div>';
+  h += '<div class="mds-corpo">';
+  h += avatar(c.nome,"xl");
+  h += '<div class="mds-info">';
+  h += '<div class="mds-nome">'+c.nome+'</div>';
+  h += '<div class="mds-sub">'+periodo+' · '+nomeLoja(lojaSel)+' · '+c.pedidos+' pedido'+(c.pedidos===1?"":"s")+'</div>';
+  if(r.vice) h += '<div class="mds-vantagem">R$ '+R(vantagem)+' à frente de '+r.vice.nome+'</div>';
+  else if(r.total===1) h += '<div class="mds-vantagem">único com vendas na semana</div>';
+  h += '</div>';
+  h += '<div class="mds-nums">';
+  h += '<div class="mds-fat">R$ '+R(c.faturamento)+'</div>';
+  if(pct==null){
+    h += '<div class="mds-meta-l">sem meta semanal definida</div>';
+  } else {
+    h += '<div class="mds-meta-l"><b class="'+nivel+'">'+Math.round(pct)+'%</b> da meta semanal · R$ '+R(c.meta)+'</div>';
+    h += '<div class="mds-bar"><div class="mds-bar-fill '+nivel+'" style="width:'+Math.min(100,pct).toFixed(1)+'%"></div></div>';
+  }
+  h += '</div>';
+  h += '</div></div>';
+  return h;
 }
 
 function vds_rank(nome, vends){
@@ -2002,8 +2137,9 @@ function salvarMetas(){
 /* ══ AUTO-REFRESH + RELÓGIO ════════════════════════════════════════ */
 var proxAtt = Date.now()+15*60*1000;
 setInterval(function(){
-  dadosHoje = null; dadosMes = null;
+  dadosHoje = null; dadosMes = null; dadosSemana = null;
   buscarDados();
+  garantirSemana(true);
   proxAtt = Date.now()+15*60*1000;
 }, 15*60*1000);
 
@@ -2029,6 +2165,7 @@ document.getElementById("dataFim").addEventListener("change", buscarDados);
 
 buscarDados();
 garantirHoje();
+garantirSemana();
 garantirHist();
 </script>
 </body>
