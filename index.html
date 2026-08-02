@@ -233,6 +233,13 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .btn-save-metas { width: 100%; padding: 14px; background: var(--gold); border: none; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--bg); font-family: inherit; cursor: pointer; margin-top: 4px; }
 .meta-dia-hint { font-size: 11px; color: var(--text3); margin-top: 10px; line-height: 1.6; background: var(--card2); border-radius: 8px; padding: 10px 12px; }
 .meta-dia-hint b { color: var(--gold2); }
+/* METAS · indicador de sincronização */
+.sync { font-size: 11.5px; border-radius: 8px; padding: 10px 13px; margin-bottom: 12px; line-height: 1.5; display: flex; align-items: center; gap: 8px; }
+.sync b { font-weight: 700; }
+.sync-ok { background: rgba(6,214,160,0.07); border: 1px solid rgba(6,214,160,0.2); color: #7ef0cd; }
+.sync-off { background: rgba(240,180,41,0.07); border: 1px solid rgba(240,180,41,0.2); color: var(--gold2); }
+.sync-load { background: var(--card); border: 1px solid var(--border); color: var(--text3); }
+
 /* METAS · seção por loja com os 3 níveis */
 .mt-loja { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
 .mt-loja-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 11px; gap: 10px; flex-wrap: wrap; }
@@ -668,6 +675,107 @@ function persistirMetas(){
   try { localStorage.setItem(LS_METAS, JSON.stringify(metas)); } catch(e){ toast("Não foi possível salvar no navegador","err"); }
 }
 
+/* ── Sincronização com o backend ──────────────────────────────────────
+   O servidor guarda as metas em memória, então um restart do Render as
+   perde. O localStorage é a cópia de segurança: se o GET vier vazio e
+   este navegador tiver metas, ele re-semeia o servidor. O salvamento
+   grava local primeiro e só depois tenta a rede — falha de rede nunca
+   faz perder o que foi digitado. */
+let metasOrigem = "local";     // "backend" | "local"
+let metasSyncErro = null;
+let metasSyncEm = null;
+let metasCarregadas = false;
+let carregandoMetas = false;
+let enviandoMetas = false;
+
+function metasTemDadosLocal(){
+  return NOMES_V.some(function(nome){
+    return IDS_LOJAS.some(function(id){
+      return NIVEIS.some(function(n){ return metaNivel(nome,id,n.chave) > 0; });
+    });
+  });
+}
+
+async function garantirMetas(forcar){
+  if(carregandoMetas) return;
+  if(metasCarregadas && !forcar) return;
+  carregandoMetas = true;
+  try {
+    var r = await fetch(BACKEND+"/metas");
+    var j = await r.json();
+    if(!r.ok || j.erro) throw new Error(j.erro || ("HTTP "+r.status));
+
+    if(j.vazio){
+      // Servidor sem metas (provavelmente reiniciou). Se este navegador
+      // tem a última cópia, devolve para o servidor.
+      if(metasTemDadosLocal()){
+        await enviarMetas(true);
+      } else {
+        metasOrigem = "backend"; metasSyncErro = null; metasSyncEm = j.atualizadoEm;
+      }
+    } else {
+      // Servidor é a fonte compartilhada: sobrescreve o que houver local.
+      NOMES_V.forEach(function(nome){
+        IDS_LOJAS.forEach(function(id){
+          metas[nome][id] = normalizarNiveis((j.metas[nome]||{})[id]);
+        });
+      });
+      persistirMetas();
+      legadoMigrado = false;
+      metasOrigem = "backend"; metasSyncErro = null; metasSyncEm = j.atualizadoEm;
+      invalidarDist();
+    }
+    metasCarregadas = true;
+  } catch(e){
+    metasOrigem = "local";
+    metasSyncErro = e.message;
+  } finally {
+    carregandoMetas = false;
+    if(abaAtual==="metas") buildMetas();
+    else if(abaAtual==="dashboard") buildDashboard();
+  }
+}
+
+async function enviarMetas(silencioso){
+  if(enviandoMetas) return false;
+  enviandoMetas = true;
+  try {
+    var r = await fetch(BACKEND+"/metas", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ metas: metas })
+    });
+    var j = await r.json();
+    if(!r.ok || j.erro) throw new Error(j.erro || ("HTTP "+r.status));
+    metasOrigem = "backend"; metasSyncErro = null; metasSyncEm = j.atualizadoEm;
+    metasCarregadas = true;
+    if(!silencioso) toast("✓ Metas salvas no servidor!");
+    return true;
+  } catch(e){
+    metasOrigem = "local"; metasSyncErro = e.message;
+    if(!silencioso) toast("Salvo neste navegador — servidor indisponível","err");
+    return false;
+  } finally { enviandoMetas = false; }
+}
+
+function statusSyncHTML(){
+  if(carregandoMetas) return '<div class="sync sync-load">⏳ Carregando metas do servidor...</div>';
+  if(metasOrigem==="backend" && !metasSyncErro){
+    var quando = metasSyncEm ? " · atualizadas em "+fmtDataHora(metasSyncEm) : "";
+    return '<div class="sync sync-ok">☁️ Sincronizadas com o servidor'+quando+' — a equipe toda vê os mesmos números.</div>';
+  }
+  return '<div class="sync sync-off">📴 Salvas <b>só neste navegador</b>'+
+         (metasSyncErro ? ' (servidor: '+metasSyncErro+')' : '')+
+         '. Vão para o servidor sozinhas assim que ele responder.</div>';
+}
+
+function fmtDataHora(iso){
+  try {
+    var d = new Date(iso);
+    return pad2(d.getDate())+"/"+pad2(d.getMonth()+1)+" às "+pad2(d.getHours())+":"+pad2(d.getMinutes());
+  } catch(e){ return iso; }
+}
+
 // Valor de um nível. Com "todas", soma as duas lojas naquele mesmo nível.
 function metaNivel(nome, lojaId, nivel){
   if(lojaId==="todas") return IDS_LOJAS.reduce(function(s,id){ return s+metaNivel(nome,id,nivel); },0);
@@ -1072,7 +1180,7 @@ function render(id){
   if(id==="sazonalidade") { garantirHist(); buildSazonalidade(); }
   if(id==="lancar")       buildLancar();
   if(id==="ranking")      buildRanking();
-  if(id==="metas")        { garantirHist(); buildMetas(); }
+  if(id==="metas")        { garantirHist(); garantirMetas(); buildMetas(); }
 }
 
 function esqueleto(titulo, sub){
@@ -1190,6 +1298,7 @@ async function atualizarTudo(){
   await buscarDados();
   garantirHoje(true);
   garantirSemana(true);
+  garantirMetas(true);
   if(["semana","mes","sazonalidade","metas"].indexOf(abaAtual)>-1) garantirHist(true);
 }
 
@@ -1978,7 +2087,8 @@ function buildMetas(){
   var el = document.getElementById("tab-metas");
   var base = dadosMes || dados;
 
-  var h = '<div class="info-note">🎯 Cada vendedor tem <b>3 níveis por loja</b>: Meta, Super Meta e Meta Ouro. A <b>Meta</b> é a que o sistema distribui entre os dias do mês (pelo peso de cada dia da semana aprendido do Bling); Super e Ouro são degraus de reconhecimento em cima dela.</div>';
+  var h = statusSyncHTML();
+  h += '<div class="info-note">🎯 Cada vendedor tem <b>3 níveis por loja</b>: Meta, Super Meta e Meta Ouro. A <b>Meta</b> é a que o sistema distribui entre os dias do mês (pelo peso de cada dia da semana aprendido do Bling); Super e Ouro são degraus de reconhecimento em cima dela.</div>';
   if(legadoMigrado) h += '<div class="info-note cyan">ℹ️ Encontramos metas salvas em formato antigo e as trouxemos para o campo <b>Meta</b> de cada loja. Confira os valores e preencha Super Meta e Meta Ouro.</div>';
   if(!hist && !histErro) h += '<div class="info-note">⏳ Ainda aprendendo o histórico. A prévia da meta diária usa divisão simples até terminar.</div>';
 
@@ -2116,21 +2226,28 @@ function previewMeta(nome){
   if(prev) prev.innerHTML = previewMetaHTML(nome, base);
 }
 
-function salvarMetasDe(nome){
+// Grava local primeiro (nunca se perde o que foi digitado), depois envia.
+async function salvarMetasDe(nome){
   coletarInputs(nome);
   persistirMetas();
   legadoMigrado = false;
   invalidarDist();
-  toast("✓ Metas de "+nome+" salvas!");
+  buildMetas();
+  var ok = await enviarMetas(true);
+  toast(ok ? "✓ Metas de "+nome+" salvas no servidor!"
+           : "Metas de "+nome+" salvas neste navegador — servidor indisponível", ok ? "ok" : "err");
   buildMetas();
 }
 
-function salvarMetas(){
+async function salvarMetas(){
   NOMES_V.forEach(coletarInputs);
   persistirMetas();
   legadoMigrado = false;
   invalidarDist();
-  toast("✓ Metas de todos os vendedores salvas!");
+  buildMetas();
+  var ok = await enviarMetas(true);
+  toast(ok ? "✓ Todas as metas salvas no servidor!"
+           : "Metas salvas neste navegador — servidor indisponível", ok ? "ok" : "err");
   buildMetas();
 }
 
@@ -2166,6 +2283,7 @@ document.getElementById("dataFim").addEventListener("change", buscarDados);
 buscarDados();
 garantirHoje();
 garantirSemana();
+garantirMetas();
 garantirHist();
 </script>
 </body>
