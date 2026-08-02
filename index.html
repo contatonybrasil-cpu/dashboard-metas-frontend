@@ -34,20 +34,30 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .header-right { display: flex; align-items: center; gap: 10px; }
 .live-pill { display: flex; align-items: center; gap: 6px; background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.2); border-radius: 20px; padding: 5px 12px; font-size: 11px; font-weight: 600; color: var(--cyan); letter-spacing: 0.5px; }
 .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 .btn { background: var(--card); border: 1px solid var(--border2); border-radius: 8px; padding: 7px 14px; color: var(--text2); font-size: 12px; font-weight: 500; font-family: inherit; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
 .btn:hover { border-color: var(--gold); color: var(--gold); }
 .btn-countdown { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); }
+.relogio { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text3); }
 
 /* DATE + NAV */
-.topbar { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.topbar { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
 .date-inputs { display: flex; gap: 8px; }
 .date-group { display: flex; flex-direction: column; gap: 4px; }
 .date-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
 .date-input { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 12px; font-family: inherit; width: 140px; transition: border-color 0.2s; }
 .date-input:focus { outline: none; border-color: var(--gold); }
-.nav { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 2px; }
-.nav-btn { padding: 8px 18px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text2); white-space: nowrap; }
+.nav { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 2px; overflow-x: auto; max-width: 100%; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-btn { padding: 8px 14px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text2); white-space: nowrap; }
 .nav-btn.active { background: var(--gold); color: #0f0f12; }
+
+/* SELETOR DE LOJA */
+.loja-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.loja-switch { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 2px; }
+.loja-btn { padding: 8px 14px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; background: transparent; color: var(--text2); white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+.loja-btn.active { background: var(--card2); color: var(--gold2); box-shadow: inset 0 0 0 1px rgba(240,180,41,0.3); }
+.loja-obs { font-size: 11px; color: var(--text3); }
 
 /* ERROR / LOADING */
 .error-box { background: rgba(239,71,111,0.08); border: 1px solid rgba(239,71,111,0.2); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; font-size: 13px; color: var(--red); display: none; line-height: 1.5; }
@@ -56,6 +66,11 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .spinner { width: 32px; height: 32px; border: 2px solid var(--border2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
 .loading p { font-size: 14px; color: var(--text2); margin-bottom: 4px; }
 .loading span { font-size: 12px; color: var(--text3); }
+.tab-loading { text-align: center; padding: 70px 20px; }
+.tab-loading .spinner { margin-bottom: 16px; }
+.tab-loading p { font-size: 13px; color: var(--text2); margin-bottom: 4px; }
+.tab-loading span { font-size: 12px; color: var(--text3); }
+.empty { color: var(--text3); text-align: center; padding: 60px 20px; font-size: 13px; line-height: 1.6; }
 
 /* KPI CARDS */
 .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
@@ -65,6 +80,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .kpi-num { font-size: 32px; font-weight: 800; letter-spacing: -1.5px; line-height: 1; color: var(--text); }
 .kpi-num.gold { color: var(--gold); }
 .kpi-num.cyan { color: var(--cyan); }
+.kpi-num.red { color: var(--red); }
+.kpi-num.sm { font-size: 24px; }
 .kpi-meta { font-size: 11px; color: var(--text3); margin-top: 6px; }
 
 /* MAIN GRID */
@@ -73,7 +90,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 
 /* CHARTS */
 .charts-col { display: flex; flex-direction: column; gap: 12px; }
-.chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+.chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 12px; }
 .chart-title { font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 14px; }
 
 /* VENDEDORES */
@@ -107,6 +124,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .stat-label { font-size: 9px; font-weight: 700; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
 .stat-val { font-size: 20px; font-weight: 800; color: var(--cyan); letter-spacing: -0.5px; }
 .stat-val.gold { color: var(--gold); }
+.stat-val.red { color: var(--red); }
 
 .part-bar-wrap { margin-top: 16px; }
 .part-bar-top { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); margin-bottom: 6px; }
@@ -181,12 +199,162 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .meta-bar-fill.warn { background: var(--gold); }
 .meta-bar-fill.danger { background: var(--red); }
 .btn-save-metas { width: 100%; padding: 14px; background: var(--gold); border: none; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--bg); font-family: inherit; cursor: pointer; margin-top: 4px; }
+.meta-dia-hint { font-size: 11px; color: var(--text3); margin-top: 10px; line-height: 1.6; background: var(--card2); border-radius: 8px; padding: 10px 12px; }
+.meta-dia-hint b { color: var(--gold2); }
+.meta-total-row { display: flex; justify-content: space-between; align-items: center; background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin-bottom: 12px; }
+.meta-total-lbl { font-size: 11px; font-weight: 700; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; }
+.meta-total-val { font-size: 22px; font-weight: 900; color: var(--gold); letter-spacing: -0.5px; }
 
 /* META BADGE no card do vendedor */
 .meta-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-top: 4px; }
 .meta-badge.ok { background: rgba(6,214,160,0.12); color: var(--cyan); }
 .meta-badge.warn { background: rgba(240,180,41,0.12); color: var(--gold); }
 .meta-badge.danger { background: rgba(239,71,111,0.12); color: var(--red); }
+.meta-badge.neutro { background: rgba(255,255,255,0.06); color: var(--text3); }
+
+/* ── HOJE ── */
+.hoje-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+.hoje-data { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+.hoje-data span { color: var(--gold); }
+.hoje-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+.hoje-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+@media (max-width: 700px) { .hoje-grid { grid-template-columns: 1fr; } }
+.hj-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; gap: 16px; align-items: center; transition: border-color 0.2s; }
+.hj-card.ok { border-color: rgba(6,214,160,0.35); }
+.hj-card.warn { border-color: rgba(240,180,41,0.35); }
+.hj-card.danger { border-color: rgba(239,71,111,0.35); }
+.ring { width: 74px; height: 74px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; background: conic-gradient(var(--ring-c) calc(var(--ring-p) * 1%), rgba(255,255,255,0.08) 0); }
+.ring::after { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--card); }
+.ring-txt { position: relative; z-index: 1; font-size: 15px; font-weight: 900; letter-spacing: -0.5px; }
+.hj-body { flex: 1; min-width: 0; }
+.hj-nome { font-size: 15px; font-weight: 700; margin-bottom: 2px; display: flex; align-items: center; gap: 7px; }
+.hj-loja { font-size: 10px; color: var(--text3); font-weight: 600; }
+.hj-vals { font-size: 12px; color: var(--text2); margin-bottom: 8px; }
+.hj-vals b { color: var(--text); font-weight: 700; }
+.hj-falta { font-size: 11px; font-weight: 600; }
+.hj-falta.ok { color: var(--cyan); }
+.hj-falta.warn { color: var(--gold); }
+.hj-falta.danger { color: var(--red); }
+.hj-bar { height: 5px; background: var(--border2); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.hj-bar-fill { height: 100%; border-radius: 3px; transition: width 0.7s ease; }
+.hj-bar-fill.ok { background: var(--cyan); }
+.hj-bar-fill.warn { background: var(--gold); }
+.hj-bar-fill.danger { background: var(--red); }
+
+.alertas { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.alerta { display: flex; align-items: flex-start; gap: 10px; border-radius: 10px; padding: 12px 14px; font-size: 12.5px; line-height: 1.5; border: 1px solid transparent; }
+.alerta b { font-weight: 700; }
+.alerta.ok { background: rgba(6,214,160,0.07); border-color: rgba(6,214,160,0.2); color: #7ef0cd; }
+.alerta.warn { background: rgba(240,180,41,0.07); border-color: rgba(240,180,41,0.2); color: var(--gold2); }
+.alerta.danger { background: rgba(239,71,111,0.07); border-color: rgba(239,71,111,0.2); color: #ff8fa8; }
+.alerta.info { background: var(--card); border-color: var(--border); color: var(--text2); }
+.alerta-ico { font-size: 15px; line-height: 1.2; flex-shrink: 0; }
+
+/* CALENDÁRIO */
+.cal-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.cal-head { font-size: 9px; font-weight: 700; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; text-align: center; padding-bottom: 4px; }
+.cal-cell { aspect-ratio: 1; border-radius: 8px; background: var(--card2); border: 1px solid var(--border); padding: 5px 4px 4px; display: flex; flex-direction: column; justify-content: space-between; min-height: 46px; cursor: default; transition: transform 0.15s; }
+.cal-cell:hover { transform: scale(1.06); z-index: 2; }
+.cal-cell.vazio { background: transparent; border-color: transparent; }
+.cal-dia { font-size: 10px; font-weight: 700; color: var(--text2); line-height: 1; }
+.cal-val { font-size: 8.5px; font-family: 'JetBrains Mono', monospace; color: var(--text3); line-height: 1.2; word-break: break-all; }
+.cal-cell.ok { background: rgba(6,214,160,0.16); border-color: rgba(6,214,160,0.4); }
+.cal-cell.ok .cal-dia, .cal-cell.ok .cal-val { color: var(--cyan); }
+.cal-cell.warn { background: rgba(240,180,41,0.14); border-color: rgba(240,180,41,0.35); }
+.cal-cell.warn .cal-dia, .cal-cell.warn .cal-val { color: var(--gold2); }
+.cal-cell.danger { background: rgba(239,71,111,0.13); border-color: rgba(239,71,111,0.32); }
+.cal-cell.danger .cal-dia, .cal-cell.danger .cal-val { color: #ff8fa8; }
+.cal-cell.fechado { background: rgba(255,255,255,0.02); border-style: dashed; }
+.cal-cell.fechado .cal-dia { color: var(--text3); }
+.cal-cell.futuro { background: var(--card2); opacity: 0.55; }
+.cal-cell.hoje { box-shadow: 0 0 0 2px var(--gold); }
+.cal-ev { font-size: 9px; line-height: 1; }
+.cal-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; font-size: 10.5px; color: var(--text3); }
+.cal-legend div { display: flex; align-items: center; gap: 5px; }
+.lg-dot { width: 9px; height: 9px; border-radius: 3px; }
+
+/* TABELA */
+.tbl-wrap { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 460px; }
+.tbl th { text-align: right; font-size: 9.5px; font-weight: 700; color: var(--text3); letter-spacing: 0.7px; text-transform: uppercase; padding: 0 10px 9px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.tbl th:first-child, .tbl td:first-child { text-align: left; }
+.tbl td { padding: 10px; border-bottom: 1px solid var(--border); color: var(--text2); text-align: right; white-space: nowrap; }
+.tbl tr:last-child td { border-bottom: none; }
+.tbl td.nome { color: var(--text); font-weight: 600; }
+.tbl td.gold { color: var(--gold); font-weight: 700; }
+.tbl td.cyan { color: var(--cyan); font-weight: 700; }
+.tbl td.red { color: var(--red); font-weight: 700; }
+.tbl tr.destaque td { background: rgba(240,180,41,0.05); }
+.tbl tr.mudo td { color: var(--text3); }
+
+.mini-bar { height: 5px; background: var(--border2); border-radius: 3px; overflow: hidden; min-width: 50px; }
+.mini-bar-fill { height: 100%; background: var(--gold); border-radius: 3px; }
+.mini-bar-fill.cyan { background: var(--cyan); }
+.mini-bar-fill.red { background: var(--red); }
+
+/* SAZONALIDADE */
+.saz-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+@media (max-width: 700px) { .saz-grid { grid-template-columns: 1fr; } }
+.saz-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+.saz-card.proxima { border-color: rgba(240,180,41,0.3); background: rgba(240,180,41,0.035); }
+.saz-top { display: flex; align-items: center; gap: 11px; margin-bottom: 10px; }
+.saz-emoji { width: 36px; height: 36px; border-radius: 10px; background: var(--card2); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.saz-nome { font-size: 14px; font-weight: 700; color: var(--text); }
+.saz-data { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.saz-conta { margin-left: auto; text-align: right; flex-shrink: 0; }
+.saz-conta-n { font-size: 17px; font-weight: 900; color: var(--gold); letter-spacing: -0.5px; }
+.saz-conta-l { font-size: 9px; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; }
+.saz-imp { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.saz-imp-n { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+.saz-imp-n.ok { color: var(--cyan); }
+.saz-imp-n.warn { color: var(--gold); }
+.saz-imp-n.danger { color: var(--red); }
+.saz-imp-n.neutro { color: var(--text3); }
+.saz-imp-l { font-size: 11px; color: var(--text3); }
+.saz-obs { font-size: 11px; color: var(--text3); line-height: 1.5; }
+.saz-obs b { color: var(--gold2); }
+
+/* SEÇÕES */
+.sec-title { font-size: 12px; font-weight: 800; color: var(--text); letter-spacing: 0.3px; margin: 22px 0 12px; display: flex; align-items: center; gap: 8px; }
+.sec-title span.hint { font-size: 10.5px; font-weight: 500; color: var(--text3); letter-spacing: 0; }
+.info-note { font-size: 11.5px; color: var(--text3); background: var(--card); border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; padding: 12px 14px; margin-bottom: 16px; line-height: 1.6; }
+.info-note b { color: var(--gold2); }
+.info-note.cyan { border-left-color: var(--cyan); }
+.info-note.cyan b { color: var(--cyan); }
+
+.pill-group { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.pill { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-size: 11px; font-weight: 600; color: var(--text3); cursor: pointer; font-family: inherit; transition: all 0.2s; }
+.pill.active { border-color: var(--gold); color: var(--gold); background: rgba(240,180,41,0.07); }
+
+/* MÊS */
+.mes-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 10px; }
+.mes-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 10px; }
+.mes-nome { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.mes-vals { font-size: 11.5px; color: var(--text3); margin-top: 3px; }
+.mes-vals b { color: var(--text2); }
+.mes-pct { font-size: 26px; font-weight: 900; letter-spacing: -1px; text-align: right; line-height: 1; }
+.mes-pct.ok { color: var(--cyan); }
+.mes-pct.warn { color: var(--gold); }
+.mes-pct.danger { color: var(--red); }
+.mes-pct-l { font-size: 10px; color: var(--text3); text-align: right; margin-top: 3px; }
+.mes-bar-wrap { position: relative; height: 10px; background: var(--border2); border-radius: 5px; overflow: hidden; margin-bottom: 6px; }
+.mes-bar-real { position: absolute; top: 0; left: 0; height: 100%; border-radius: 5px; }
+.mes-bar-real.ok { background: var(--cyan); }
+.mes-bar-real.warn { background: var(--gold); }
+.mes-bar-real.danger { background: var(--red); }
+.mes-bar-proj { position: absolute; top: 0; height: 100%; background: repeating-linear-gradient(45deg, rgba(255,255,255,0.13), rgba(255,255,255,0.13) 4px, transparent 4px, transparent 8px); }
+.mes-marca { position: absolute; top: -3px; width: 2px; height: 16px; background: var(--text); opacity: 0.55; }
+.mes-legend { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); }
+.mes-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); gap: 10px; flex-wrap: wrap; }
+.mes-foot-txt { font-size: 11.5px; color: var(--text3); line-height: 1.5; }
+.mes-foot-txt b { color: var(--gold2); }
+.veredito { font-size: 10px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; padding: 5px 11px; border-radius: 7px; white-space: nowrap; }
+.veredito.ok { background: rgba(6,214,160,0.13); color: var(--cyan); }
+.veredito.warn { background: rgba(240,180,41,0.13); color: var(--gold); }
+.veredito.danger { background: rgba(239,71,111,0.13); color: var(--red); }
+.veredito.neutro { background: rgba(255,255,255,0.06); color: var(--text3); }
+
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes up { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 .animate { animation: up 0.4s ease both; }
@@ -206,27 +374,32 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
     </div>
     <div class="header-right">
       <div class="live-pill"><div class="live-dot"></div>Bling Live</div>
-      <button class="btn" onclick="buscarDados()">↻ Atualizar <span class="btn-countdown" id="countdown"></span></button>
+      <span class="relogio" id="relogio"></span>
+      <button class="btn" onclick="atualizarTudo()">↻ Atualizar <span class="btn-countdown" id="countdown"></span></button>
     </div>
   </div>
 
   <div class="topbar animate">
-    <div class="date-inputs">
+    <div class="date-inputs" id="periodo-wrap">
       <div class="date-group"><label class="date-label">De</label><input type="date" id="dataInicio" class="date-input"></div>
       <div class="date-group"><label class="date-label">Até</label><input type="date" id="dataFim" class="date-input"></div>
     </div>
-    <div class="nav">
-      <button class="nav-btn active" onclick="tab('dashboard')">📊 Dashboard</button>
-      <button class="nav-btn" onclick="tab('lancar')">＋ Lançar</button>
-      <button class="nav-btn" onclick="tab('ranking')">🏆 Ranking</button>
-      <button class="nav-btn" onclick="tab('metas')">🎯 Metas</button>
-    </div>
+    <div class="nav" id="nav"></div>
+  </div>
+
+  <div class="loja-bar animate">
+    <div class="loja-switch" id="loja-switch"></div>
+    <span class="loja-obs" id="loja-obs"></span>
   </div>
 
   <div id="error-box" class="error-box"></div>
   <div id="loading" class="loading"><div class="spinner"></div><p>Buscando dados do Bling...</p><span>Pode levar até 2 minutos</span></div>
 
   <div id="tab-dashboard"></div>
+  <div id="tab-hoje" style="display:none"></div>
+  <div id="tab-semana" style="display:none"></div>
+  <div id="tab-mes" style="display:none"></div>
+  <div id="tab-sazonalidade" style="display:none"></div>
   <div id="tab-lancar" style="display:none"></div>
   <div id="tab-ranking" style="display:none"></div>
   <div id="tab-metas" style="display:none"></div>
@@ -235,61 +408,486 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+"use strict";
 const BACKEND = "https://dashboard-metas.onrender.com";
 const COLORS = ["#f0b429","#06d6a0","#ef476f","#4895ef","#a8dadc"];
-let dados = null, selVendedor = null, ops = [], abaAtual = "dashboard";
+
+/* ══ CONFIGURAÇÃO ══════════════════════════════════════════════════ */
+const LOJAS = {
+  "203654110": { nome: "Parque do Povo", emoji: "🏬", dias: [1,2,3,4,5,6], obs: "Segunda a sábado (fecha domingo)" },
+  "203777302": { nome: "Prudenshopping", emoji: "🛍", dias: [0,1,2,3,4,5,6], obs: "Aberta todos os dias" }
+};
+const IDS_LOJAS = Object.keys(LOJAS);
+const VENDEDORES = [
+  { nome: "Guilherme", id: "15596666568", emoji: "👨‍💼" },
+  { nome: "Felipe",    id: "15596595092", emoji: "👨" },
+  { nome: "Giovana",   id: "15596218776", emoji: "👩" },
+  { nome: "Ítalo",     id: "15596662555", emoji: "🧑" }
+];
+const NOMES_V = VENDEDORES.map(function(v){ return v.nome; });
+const EMOJI_V = {}; VENDEDORES.forEach(function(v){ EMOJI_V[v.nome] = v.emoji; });
+
+const DIAS = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+const DIAS_C = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+
+// Horário de loja usado para medir o quanto do dia já passou
+const HORA_ABRE = 9, HORA_FECHA = 22;
+
+const ABAS = [
+  { id: "dashboard",    rotulo: "📊 Dashboard" },
+  { id: "hoje",         rotulo: "📅 Hoje" },
+  { id: "semana",       rotulo: "📊 Semana" },
+  { id: "mes",          rotulo: "📈 Mês" },
+  { id: "sazonalidade", rotulo: "🗓 Sazonalidade" },
+  { id: "lancar",       rotulo: "＋ Lançar" },
+  { id: "ranking",      rotulo: "🏆 Ranking" },
+  { id: "metas",        rotulo: "🎯 Metas" }
+];
+
+/* ══ ESTADO ════════════════════════════════════════════════════════ */
+let dados = null;      // período dos seletores de data (Dashboard / Ranking)
+let dadosHoje = null;  // apenas o dia de hoje
+let dadosMes = null;   // mês corrente completo
+let hist = null;       // /historico
+let histErro = null;
+let carregandoHist = false;
+let mesesHist = 6;
+let selVendedor = null, ops = [], abaAtual = "dashboard", lojaSel = "todas";
 const checks = {};
 
-const hoje = new Date().toISOString().slice(0,10);
-const mesInicio = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0,10);
-document.getElementById("dataInicio").value = mesInicio;
+/* ══ HELPERS DE DATA (sempre em hora local, nunca UTC) ═════════════ */
+function pad2(n){ return String(n).padStart(2,"0"); }
+function ymd(d){ return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
+function hojeStr(){ return ymd(new Date()); }
+function dt(s){ return new Date(s+"T12:00:00"); }
+function dow(s){ return dt(s).getDay(); }
+function addD(d,n){ return new Date(d.getTime()+n*86400000); }
+function diasNoMes(a,m){ return new Date(a,m+1,0).getDate(); }
+function fmtDM(s){ var d=dt(s); return pad2(d.getDate())+"/"+pad2(d.getMonth()+1); }
+function fmtLongo(s){ var d=dt(s); return DIAS[d.getDay()]+", "+d.getDate()+" de "+MESES[d.getMonth()]; }
+function primeiroDiaMes(){ var d=new Date(); return ymd(new Date(d.getFullYear(), d.getMonth(), 1)); }
+
+const hoje = hojeStr();
+document.getElementById("dataInicio").value = primeiroDiaMes();
 document.getElementById("dataFim").value = hoje;
 
-function R(n, d) { d = d||0; return Number(n).toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function R(n,d){ d=d||0; return Number(n||0).toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function Rk(n){ n=Number(n||0); return n>=1000 ? (n/1000).toFixed(n>=10000?0:1)+"k" : R(n); }
 
-function toast(msg, tipo) {
-  var t = document.getElementById("toast");
-  t.textContent = msg; t.className = "toast "+(tipo||"ok")+" show";
-  setTimeout(function(){ t.className = "toast"; }, 3000);
+function toast(msg,tipo){
+  var t=document.getElementById("toast");
+  t.textContent=msg; t.className="toast "+(tipo||"ok")+" show";
+  setTimeout(function(){ t.className="toast"; },3000);
 }
 
-let chartFat=null, chartPed=null, chartTM=null;
-function killCharts() {
-  if(chartFat){chartFat.destroy();chartFat=null;}
-  if(chartPed){chartPed.destroy();chartPed=null;}
-  if(chartTM){chartTM.destroy();chartTM=null;}
+/* ══ CHARTS ════════════════════════════════════════════════════════ */
+const charts = {};
+function mkChart(id,cfg){
+  if(charts[id]){ charts[id].destroy(); delete charts[id]; }
+  var el=document.getElementById(id);
+  if(!el || typeof Chart==="undefined") return;
+  charts[id]=new Chart(el,cfg);
 }
+function killCharts(){ Object.keys(charts).forEach(function(k){ charts[k].destroy(); delete charts[k]; }); }
+const CO_BASE = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{ legend:{display:false} },
+  scales:{
+    x:{ ticks:{color:"#55545c",font:{size:11}}, grid:{color:"rgba(255,255,255,0.04)"} },
+    y:{ ticks:{color:"#55545c",font:{size:10}}, grid:{color:"rgba(255,255,255,0.05)"} }
+  }
+};
+function eixoReais(){ return { ticks:{color:"#55545c",font:{size:10},callback:function(v){return "R$"+Rk(v);}}, grid:{color:"rgba(255,255,255,0.05)"} }; }
 
-// Metas salvas em localStorage
-var metas = {};
-try { metas = JSON.parse(localStorage.getItem("metas_fat") || "{}"); } catch(e) {}
+/* ══ METAS (localStorage, independentes por loja) ═══════════════════ */
+const LS_METAS = "nys_metas_v2";
+let metas = {};
+let legadoMigrado = false;
+IDS_LOJAS.forEach(function(id){ metas[id] = {}; });
 
-function getMeta(nome) { return metas[nome] || 0; }
+(function carregarMetas(){
+  try {
+    var raw = JSON.parse(localStorage.getItem(LS_METAS) || "null");
+    if(raw){
+      IDS_LOJAS.forEach(function(id){ metas[id] = Object.assign({}, raw[id] || {}); });
+      return;
+    }
+    // Migração do formato antigo (uma meta única por vendedor, sem loja)
+    var antigo = JSON.parse(localStorage.getItem("metas_fat") || "{}");
+    if(Object.keys(antigo).length){
+      metas[IDS_LOJAS[0]] = Object.assign({}, antigo);
+      legadoMigrado = true;
+    }
+  } catch(e){}
+})();
 
-function metaStatus(fat, meta) {
-  if(!meta || meta === 0) return null;
-  var pct = fat/meta*100;
-  if(pct >= 100) return "ok";
-  if(pct >= 70) return "warn";
+function persistirMetas(){
+  try { localStorage.setItem(LS_METAS, JSON.stringify(metas)); } catch(e){ toast("Não foi possível salvar no navegador","err"); }
+}
+function metaV(nome, lojaId){
+  if(lojaId==="todas") return IDS_LOJAS.reduce(function(s,id){ return s+(Number(metas[id][nome])||0); },0);
+  return Number((metas[lojaId]||{})[nome]) || 0;
+}
+function metaLoja(lojaId){
+  return NOMES_V.reduce(function(s,n){ return s+metaV(n,lojaId); },0);
+}
+function lojasAtivas(){ return lojaSel==="todas" ? IDS_LOJAS : [lojaSel]; }
+function nomeLoja(lojaId){ return lojaId==="todas" ? "Todas as lojas" : (LOJAS[lojaId] ? LOJAS[lojaId].nome : lojaId); }
+function diasAbertos(lojaId){
+  if(lojaId==="todas") return [0,1,2,3,4,5,6];
+  return LOJAS[lojaId] ? LOJAS[lojaId].dias : [0,1,2,3,4,5,6];
+}
+function abreEm(lojaId, dataStr){ return diasAbertos(lojaId).indexOf(dow(dataStr)) !== -1; }
+
+function statusPct(pct){
+  if(pct>=100) return "ok";
+  if(pct>=70) return "warn";
   return "danger";
 }
-
-function metaEmoji(status) {
-  if(status === "ok") return "✓ Meta atingida";
-  if(status === "warn") return "⚡ Em evolução";
+function metaStatus(fat, meta){
+  if(!meta || meta===0) return null;
+  return statusPct(fat/meta*100);
+}
+function metaEmoji(status){
+  if(status==="ok") return "✓ Meta atingida";
+  if(status==="warn") return "⚡ Em evolução";
   return "⚠ Abaixo da meta";
 }
 
-function tab(id) {
-  abaAtual = id;
-  document.querySelectorAll(".nav-btn").forEach(function(b,i){ b.classList.toggle("active",["dashboard","lancar","ranking","metas"][i]===id); });
-  ["dashboard","lancar","ranking","metas"].forEach(function(x){ document.getElementById("tab-"+x).style.display=x===id?"block":"none"; });
-  if(id==="lancar") buildLancar();
-  if(id==="ranking") buildRanking();
-  if(id==="metas") buildMetas();
+/* ══ CALENDÁRIO COMERCIAL (espelha o backend, mas olha para o futuro) ══ */
+function pascoa(ano){
+  var a=ano%19,b=Math.floor(ano/100),c=ano%100,d=Math.floor(b/4),e=b%4,
+      f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,
+      i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),
+      mes=Math.floor((h+l-7*m+114)/31), dia=((h+l-7*m+114)%31)+1;
+  return new Date(ano,mes-1,dia,12);
+}
+function nDiaSemana(ano,mes,ds,n){
+  var d=new Date(ano,mes-1,1,12);
+  var desloc=(ds-d.getDay()+7)%7;
+  return new Date(ano,mes-1,1+desloc+(n-1)*7,12);
+}
+function ultimoDiaSemana(ano,mes,ds){
+  var ultimo=new Date(ano,mes,0,12);
+  var desloc=(ultimo.getDay()-ds+7)%7;
+  return new Date(ano,mes-1,ultimo.getDate()-desloc,12);
+}
+function fx(a,m,d){ return new Date(a,m-1,d,12); }
+
+const EVENTOS = [
+  { nome:"Volta às Aulas",      emoji:"🎒", antes:0,  depois:14, quando:function(a){return fx(a,2,1);} },
+  { nome:"Carnaval",            emoji:"🎭", antes:4,  depois:1,  quando:function(a){return addD(pascoa(a),-47);} },
+  { nome:"Dia da Mulher",       emoji:"🌷", antes:5,  depois:0,  quando:function(a){return fx(a,3,8);} },
+  { nome:"Páscoa",              emoji:"🐣", antes:5,  depois:0,  quando:function(a){return pascoa(a);} },
+  { nome:"Dia do Trabalho",     emoji:"🛠", antes:2,  depois:0,  quando:function(a){return fx(a,5,1);} },
+  { nome:"Dia das Mães",        emoji:"💐", antes:8,  depois:0,  quando:function(a){return nDiaSemana(a,5,0,2);} },
+  { nome:"Dia dos Namorados",   emoji:"❤️", antes:6,  depois:0,  quando:function(a){return fx(a,6,12);} },
+  { nome:"Festas Juninas",      emoji:"🎪", antes:6,  depois:0,  quando:function(a){return fx(a,6,24);} },
+  { nome:"Dia dos Pais",        emoji:"👔", antes:8,  depois:0,  quando:function(a){return nDiaSemana(a,8,0,2);} },
+  { nome:"Independência",       emoji:"🇧🇷", antes:2,  depois:1,  quando:function(a){return fx(a,9,7);} },
+  { nome:"Dia do Cliente",      emoji:"🤝", antes:3,  depois:1,  quando:function(a){return fx(a,9,15);} },
+  { nome:"Dia das Crianças",    emoji:"🧒", antes:6,  depois:0,  quando:function(a){return fx(a,10,12);} },
+  { nome:"Black Friday",        emoji:"🖤", antes:5,  depois:3,  quando:function(a){return ultimoDiaSemana(a,11,5);} },
+  { nome:"Natal",               emoji:"🎄", antes:14, depois:0,  quando:function(a){return fx(a,12,25);} },
+  { nome:"Réveillon",           emoji:"🎉", antes:4,  depois:0,  quando:function(a){return fx(a,12,31);} }
+];
+
+const cacheEventos = {};
+function eventosDoAno(ano){
+  if(cacheEventos[ano]) return cacheEventos[ano];
+  cacheEventos[ano] = EVENTOS.map(function(ev){
+    var d = ev.quando(ano);
+    return {
+      nome: ev.nome, emoji: ev.emoji, ano: ano, data: ymd(d),
+      janelaInicio: ymd(addD(d,-ev.antes)),
+      janelaFim: ymd(addD(d,ev.depois)),
+      diasJanela: ev.antes+ev.depois+1
+    };
+  });
+  return cacheEventos[ano];
 }
 
-async function buscarDados() {
+/* ══ MOTOR DE DISTRIBUIÇÃO (o "inteligente" das metas) ═════════════ */
+function fonteHist(lojaId){
+  if(!hist) return null;
+  if(lojaId!=="todas" && hist.lojas && hist.lojas[lojaId]) return hist.lojas[lojaId];
+  return hist.geral || null;
+}
+
+// Peso "dia normal" de cada dia da semana, aprendido do Bling.
+// Usa a média por dia SEM janelas sazonais para não contar duas vezes.
+function pesosDS(lojaId){
+  var src = fonteHist(lojaId);
+  var abertos = diasAbertos(lojaId);
+  var out = [0,0,0,0,0,0,0], soma = 0;
+  if(src && src.diaSemana){
+    for(var d=0; d<7; d++){
+      if(abertos.indexOf(d)===-1) continue;
+      var b = src.diaSemana[d] || {};
+      var p = b.baseMediaDia || b.mediaDia || 0;
+      out[d] = p; soma += p;
+    }
+  }
+  if(soma<=0){
+    abertos.forEach(function(d){ out[d]=1; });
+    return { pesos: out, aprendido: false };
+  }
+  return { pesos: out, aprendido: true };
+}
+
+// Multiplicador aprendido de uma data comemorativa (média dos anos medidos)
+function multAprendido(nomeEvento, lojaId){
+  var src = fonteHist(lojaId);
+  if(!src || !src.sazonalidade) return null;
+  var medidos = src.sazonalidade.filter(function(e){ return e.nome===nomeEvento && e.comHistorico && e.multiplicador; });
+  if(!medidos.length) return null;
+  return medidos.reduce(function(s,e){ return s+e.multiplicador; },0) / medidos.length;
+}
+
+const cacheDist = {};
+function invalidarDist(){ Object.keys(cacheDist).forEach(function(k){ delete cacheDist[k]; }); }
+
+// Fração do faturamento do mês que cada dia deveria representar
+function distMes(lojaId, ano, mes){
+  var key = lojaId+"_"+ano+"_"+mes;
+  if(cacheDist[key]) return cacheDist[key];
+  var p = pesosDS(lojaId);
+  var evs = eventosDoAno(ano);
+  var n = diasNoMes(ano,mes), porDia = {}, total = 0, eventoDe = {};
+  for(var dia=1; dia<=n; dia++){
+    var s = ano+"-"+pad2(mes+1)+"-"+pad2(dia);
+    var w = p.pesos[dow(s)];
+    if(w<=0){ porDia[s]=0; continue; }
+    var mult = 1;
+    for(var i=0;i<evs.length;i++){
+      var ev = evs[i];
+      if(s>=ev.janelaInicio && s<=ev.janelaFim){
+        if(!eventoDe[s]) eventoDe[s] = ev;
+        var m = multAprendido(ev.nome, lojaId);
+        if(m && m>1) mult = Math.max(mult, m);
+      }
+    }
+    porDia[s] = w*mult; total += w*mult;
+  }
+  Object.keys(porDia).forEach(function(k){ porDia[k] = total>0 ? porDia[k]/total : 0; });
+  cacheDist[key] = { porDia: porDia, aprendido: p.aprendido, eventoDe: eventoDe };
+  return cacheDist[key];
+}
+
+// Quanto do dia de hoje já passou (0..1), pelo horário de loja
+function fracHoje(){
+  var ag = new Date();
+  var h = ag.getHours() + ag.getMinutes()/60;
+  if(h <= HORA_ABRE) return 0.02;
+  if(h >= HORA_FECHA) return 1;
+  return (h-HORA_ABRE)/(HORA_FECHA-HORA_ABRE);
+}
+
+// Meta do dia de um vendedor (recursiva para "todas")
+function metaDiaV(nome, lojaId, dataStr){
+  if(lojaId==="todas") return IDS_LOJAS.reduce(function(s,id){ return s+metaDiaV(nome,id,dataStr); },0);
+  var d = dt(dataStr);
+  var dist = distMes(lojaId, d.getFullYear(), d.getMonth());
+  return metaV(nome,lojaId) * (dist.porDia[dataStr]||0);
+}
+function metaDiaLoja(lojaId, dataStr){
+  if(lojaId==="todas") return IDS_LOJAS.reduce(function(s,id){ return s+metaDiaLoja(id,dataStr); },0);
+  var d = dt(dataStr);
+  var dist = distMes(lojaId, d.getFullYear(), d.getMonth());
+  return metaLoja(lojaId) * (dist.porDia[dataStr]||0);
+}
+// Fração do mês acumulada até uma data (fracParcial aplica ao último dia)
+function fracAcum(lojaId, ateStr, fracParcial){
+  var d = dt(ateStr);
+  var dist = distMes(lojaId, d.getFullYear(), d.getMonth());
+  var s = 0;
+  Object.keys(dist.porDia).forEach(function(k){
+    if(k < ateStr) s += dist.porDia[k];
+    else if(k === ateStr) s += dist.porDia[k] * (fracParcial==null ? 1 : fracParcial);
+  });
+  return s;
+}
+// Fração restante a partir de uma data (inclusive)
+function fracRestante(lojaId, deStr){
+  var d = dt(deStr);
+  var dist = distMes(lojaId, d.getFullYear(), d.getMonth());
+  var s = 0;
+  Object.keys(dist.porDia).forEach(function(k){ if(k >= deStr) s += dist.porDia[k]; });
+  return s;
+}
+function metaAcumV(nome, lojaId, ateStr, fracParcial){
+  if(lojaId==="todas") return IDS_LOJAS.reduce(function(s,id){ return s+metaAcumV(nome,id,ateStr,fracParcial); },0);
+  return metaV(nome,lojaId) * fracAcum(lojaId, ateStr, fracParcial);
+}
+
+/* ══ LEITURA DOS DADOS DO BACKEND ══════════════════════════════════ */
+function temPorLoja(d){ return !!(d && d.porLoja); }
+
+// Faturamento de um vendedor num conjunto de dados, para a loja selecionada
+function fatV(d, nome, lojaId){
+  if(!d) return 0;
+  if(lojaId==="todas"){
+    if(temPorLoja(d)) return IDS_LOJAS.reduce(function(s,id){ return s+fatV(d,nome,id); },0);
+    var g = (d.vendedores||[]).find(function(v){ return v.nome===nome; });
+    return g ? g.faturamento : 0;
+  }
+  if(!temPorLoja(d) || !d.porLoja[lojaId]) return 0;
+  var v = (d.porLoja[lojaId].vendedores||[]).find(function(x){ return x.nome===nome; });
+  return v ? v.faturamento : 0;
+}
+function pedV(d, nome, lojaId){
+  if(!d) return 0;
+  if(lojaId==="todas"){
+    if(temPorLoja(d)) return IDS_LOJAS.reduce(function(s,id){ return s+pedV(d,nome,id); },0);
+    var g = (d.vendedores||[]).find(function(v){ return v.nome===nome; });
+    return g ? g.pedidos : 0;
+  }
+  if(!temPorLoja(d) || !d.porLoja[lojaId]) return 0;
+  var v = (d.porLoja[lojaId].vendedores||[]).find(function(x){ return x.nome===nome; });
+  return v ? v.pedidos : 0;
+}
+// Vendedores da loja selecionada, ordenados (exclui Gerentes)
+function vendedoresDe(d, lojaId){
+  if(!d) return [];
+  var lista;
+  if(lojaId==="todas" || !temPorLoja(d)){
+    if(temPorLoja(d)){
+      var mapa = {};
+      IDS_LOJAS.forEach(function(id){
+        ((d.porLoja[id]||{}).vendedores||[]).forEach(function(v){
+          if(!mapa[v.nome]) mapa[v.nome] = { nome:v.nome, faturamento:0, pedidos:0, pecas:0 };
+          mapa[v.nome].faturamento += v.faturamento;
+          mapa[v.nome].pedidos += v.pedidos;
+          mapa[v.nome].pecas += v.pecas;
+        });
+      });
+      lista = Object.keys(mapa).map(function(k){
+        var m = mapa[k];
+        m.ticketMedio = m.pedidos>0 ? m.faturamento/m.pedidos : 0;
+        return m;
+      });
+    } else {
+      lista = (d.vendedores||[]).slice();
+    }
+  } else {
+    lista = (((d.porLoja||{})[lojaId]||{}).vendedores||[]).slice();
+  }
+  return lista.filter(function(v){ return v.nome!=="Gerentes"; })
+              .sort(function(a,b){ return b.faturamento-a.faturamento; });
+}
+function gerentesDe(d, lojaId){
+  if(!d) return null;
+  if(lojaId==="todas" || !temPorLoja(d)){
+    if(!temPorLoja(d)) return (d.vendedores||[]).find(function(v){ return v.nome==="Gerentes"; }) || null;
+    var fat=0, ped=0, achou=false;
+    IDS_LOJAS.forEach(function(id){
+      var g = (((d.porLoja[id]||{}).vendedores)||[]).find(function(v){ return v.nome==="Gerentes"; });
+      if(g){ achou=true; fat+=g.faturamento; ped+=g.pedidos; }
+    });
+    return achou ? { nome:"Gerentes", faturamento:fat, pedidos:ped } : null;
+  }
+  return ((((d.porLoja||{})[lojaId]||{}).vendedores)||[]).find(function(v){ return v.nome==="Gerentes"; }) || null;
+}
+// Série diária realizada da loja selecionada: { "2026-08-01": faturamento }
+function serieRealizada(lojaId){
+  var out = {};
+  function juntar(fonte){
+    if(!fonte) return;
+    Object.keys(fonte).forEach(function(data){
+      var reg = fonte[data];
+      var val;
+      if(lojaId==="todas") val = reg.faturamento;
+      else val = reg.porLoja && reg.porLoja[lojaId] ? reg.porLoja[lojaId].faturamento : 0;
+      out[data] = val;
+    });
+  }
+  // histórico (base) → mês corrente (mais fresco) → hoje (ao vivo)
+  if(hist){
+    var src = fonteHist(lojaId);
+    if(src && src.diario){
+      src.diario.forEach(function(r){ out[r.data] = r.faturamento; });
+    }
+  }
+  if(dadosMes && dadosMes.diario) juntar(dadosMes.diario);
+  if(dados && dados.diario) juntar(dados.diario);
+  if(dadosHoje && dadosHoje.diario) juntar(dadosHoje.diario);
+  return out;
+}
+
+/* ══ NAVEGAÇÃO ═════════════════════════════════════════════════════ */
+(function montarNav(){
+  document.getElementById("nav").innerHTML = ABAS.map(function(a){
+    return '<button class="nav-btn'+(a.id==="dashboard"?" active":"")+'" data-aba="'+a.id+'" onclick="tab(\''+a.id+'\')">'+a.rotulo+'</button>';
+  }).join("");
+})();
+
+(function montarLojas(){
+  var h = '<button class="loja-btn active" data-loja="todas" onclick="setLoja(\'todas\')">🏪 Todas</button>';
+  IDS_LOJAS.forEach(function(id){
+    h += '<button class="loja-btn" data-loja="'+id+'" onclick="setLoja(\''+id+'\')">'+LOJAS[id].emoji+' '+LOJAS[id].nome+'</button>';
+  });
+  document.getElementById("loja-switch").innerHTML = h;
+  atualizarObsLoja();
+})();
+
+function atualizarObsLoja(){
+  var el = document.getElementById("loja-obs");
+  el.textContent = lojaSel==="todas"
+    ? "Somando as duas lojas · metas independentes por loja"
+    : LOJAS[lojaSel].obs;
+}
+
+function setLoja(id){
+  lojaSel = id;
+  document.querySelectorAll(".loja-btn").forEach(function(b){
+    b.classList.toggle("active", b.getAttribute("data-loja")===id);
+  });
+  atualizarObsLoja();
+  invalidarDist();
+  render(abaAtual);
+}
+
+function tab(id){
+  abaAtual = id;
+  document.querySelectorAll(".nav-btn").forEach(function(b){
+    b.classList.toggle("active", b.getAttribute("data-aba")===id);
+  });
+  ABAS.forEach(function(a){
+    document.getElementById("tab-"+a.id).style.display = a.id===id ? "block" : "none";
+  });
+  document.getElementById("periodo-wrap").style.display =
+    (id==="dashboard" || id==="ranking") ? "flex" : "none";
+  render(id);
+}
+
+function render(id){
+  if(id==="dashboard")    buildDashboard();
+  if(id==="hoje")         { garantirHoje(); buildHoje(); }
+  if(id==="semana")       { garantirHist(); buildSemana(); }
+  if(id==="mes")          { garantirHist(); garantirMes(); buildMes(); }
+  if(id==="sazonalidade") { garantirHist(); buildSazonalidade(); }
+  if(id==="lancar")       buildLancar();
+  if(id==="ranking")      buildRanking();
+  if(id==="metas")        { garantirHist(); buildMetas(); }
+}
+
+function esqueleto(titulo, sub){
+  return '<div class="tab-loading"><div class="spinner"></div><p>'+titulo+'</p><span>'+(sub||"")+'</span></div>';
+}
+function erroBackendHTML(msg){
+  return '<div class="empty">⚠️ '+msg+'<br><br><a href="'+BACKEND+'/auth" target="_blank" style="color:var(--cyan)">Reconectar ao Bling</a></div>';
+}
+
+/* ══ FETCH ═════════════════════════════════════════════════════════ */
+async function pegarVendas(di, df){
+  var r = await fetch(BACKEND+"/vendas?dataInicio="+di+"&dataFim="+df);
+  var j = await r.json();
+  if(j.erro) throw new Error(j.erro);
+  return j;
+}
+
+async function buscarDados(){
   var di = document.getElementById("dataInicio").value;
   var df = document.getElementById("dataFim").value;
   document.getElementById("loading").style.display = "block";
@@ -297,18 +895,17 @@ async function buscarDados() {
   document.getElementById("tab-dashboard").innerHTML = "";
   killCharts();
   try {
-    var r = await fetch(BACKEND+"/vendas?dataInicio="+di+"&dataFim="+df);
-    var j = await r.json();
-    if(j.erro) throw new Error(j.erro);
-    dados = Object.assign({},j,{vendedores:(j.vendedores||[]).slice().sort(function(a,b){return b.faturamento-a.faturamento;})});
-    var vends = dados.vendedores.filter(function(v){return v.nome!=="Gerentes";});
-    selVendedor = vends[0]?vends[0].nome:null;
-    buildDashboard();
-    if(abaAtual==="ranking") buildRanking();
-  } catch(e) {
+    var j = await pegarVendas(di, df);
+    dados = j;
+    var vends = vendedoresDe(dados, lojaSel);
+    selVendedor = vends[0] ? vends[0].nome : null;
+    // Se o período é o mês corrente, reaproveita como dadosMes
+    if(di===primeiroDiaMes() && df===hoje) dadosMes = j;
+    render(abaAtual);
+  } catch(e){
     var eb = document.getElementById("error-box");
     eb.style.display = "block";
-    eb.innerHTML = e.message.includes("utenticado")||e.message.includes("fetch")
+    eb.innerHTML = (e.message.indexOf("utenticado")>-1 || e.message.indexOf("fetch")>-1)
       ? '⚠️ Backend desconectado. <a href="'+BACKEND+'/auth" target="_blank">Clique aqui para reconectar</a> e depois atualize.'
       : "⚠️ "+e.message;
   } finally {
@@ -316,49 +913,105 @@ async function buscarDados() {
   }
 }
 
-function buildDashboard() {
-  if(!dados) return;
-  killCharts();
-  var vends = dados.vendedores.filter(function(v){return v.nome!=="Gerentes";});
-  var ger = dados.vendedores.find(function(v){return v.nome==="Gerentes";});
-  var fatTotal = vends.reduce(function(s,v){return s+v.faturamento;},0);
-  var pedTotal = vends.reduce(function(s,v){return s+v.pedidos;},0);
-  var pecasTotal = vends.reduce(function(s,v){return s+v.pecas;},0);
-  var tmGeral = pedTotal>0?fatTotal/pedTotal:0;
-  var paGeral = pedTotal>0?pecasTotal/pedTotal:0;
-  var labels = vends.map(function(v){return v.nome;});
-  var cores = vends.map(function(_,i){return COLORS[i]||"#888";});
+let carregandoHoje = false;
+async function garantirHoje(forcar){
+  if(carregandoHoje) return;
+  if(dadosHoje && !forcar) return;
+  carregandoHoje = true;
+  try {
+    dadosHoje = await pegarVendas(hoje, hoje);
+    if(abaAtual==="hoje") buildHoje();
+  } catch(e){
+    if(abaAtual==="hoje" && !dadosHoje){
+      document.getElementById("tab-hoje").innerHTML = erroBackendHTML("Não foi possível carregar as vendas de hoje: "+e.message);
+    }
+  } finally { carregandoHoje = false; }
+}
+
+let carregandoMes = false;
+async function garantirMes(forcar){
+  if(carregandoMes) return;
+  if(dadosMes && !forcar) return;
+  carregandoMes = true;
+  try {
+    dadosMes = await pegarVendas(primeiroDiaMes(), hoje);
+    if(abaAtual==="mes") buildMes();
+    if(abaAtual==="hoje") buildHoje();
+  } catch(e){
+  } finally { carregandoMes = false; }
+}
+
+async function garantirHist(forcar){
+  if(carregandoHist) return;
+  if(hist && !forcar) return;
+  carregandoHist = true;
+  histErro = null;
+  try {
+    var r = await fetch(BACKEND+"/historico?meses="+mesesHist);
+    var j = await r.json();
+    if(j.erro) throw new Error(j.erro);
+    hist = j;
+    invalidarDist();
+  } catch(e){
+    histErro = e.message;
+  } finally {
+    carregandoHist = false;
+    render(abaAtual);
+  }
+}
+
+async function atualizarTudo(){
+  dadosHoje = null; dadosMes = null;
+  await buscarDados();
+  garantirHoje(true);
+  if(["semana","mes","sazonalidade","metas"].indexOf(abaAtual)>-1) garantirHist(true);
+}
+
+/* ══ ABA: DASHBOARD ════════════════════════════════════════════════ */
+function buildDashboard(){
+  if(!dados){ document.getElementById("tab-dashboard").innerHTML = ""; return; }
+  var vends = vendedoresDe(dados, lojaSel);
+  var ger = gerentesDe(dados, lojaSel);
+  var fatTotal = vends.reduce(function(s,v){ return s+v.faturamento; },0);
+  var pedTotal = vends.reduce(function(s,v){ return s+v.pedidos; },0);
+  var pecasTotal = vends.reduce(function(s,v){ return s+v.pecas; },0);
+  var tmGeral = pedTotal>0 ? fatTotal/pedTotal : 0;
+  var paGeral = pedTotal>0 ? pecasTotal/pedTotal : 0;
+  var labels = vends.map(function(v){ return v.nome; });
+  var cores = vends.map(function(_,i){ return COLORS[i]||"#888"; });
   var medals = ["🥇","🥈","🥉","🏅","🏅"];
 
-  var h = "";
+  if(!vends.length){
+    document.getElementById("tab-dashboard").innerHTML =
+      '<div class="empty">Nenhuma venda encontrada em <b>'+nomeLoja(lojaSel)+'</b> neste período.</div>';
+    return;
+  }
+  if(selVendedor && !vends.some(function(v){ return v.nome===selVendedor; })) selVendedor = vends[0].nome;
+  if(!selVendedor) selVendedor = vends[0].nome;
 
-  // KPIs
+  var h = "";
   h += '<div class="kpi-row animate">';
-  h += '<div class="kpi"><div class="kpi-label">💰 Faturamento</div><div class="kpi-num gold">R$ '+R(fatTotal)+'</div><div class="kpi-meta">vendedores ativos</div></div>';
-  h += '<div class="kpi"><div class="kpi-label">🛍 Pedidos</div><div class="kpi-num">'+R(dados.totalPedidos)+'</div><div class="kpi-meta">total do período</div></div>';
+  h += '<div class="kpi"><div class="kpi-label">💰 Faturamento</div><div class="kpi-num gold">R$ '+R(fatTotal)+'</div><div class="kpi-meta">'+nomeLoja(lojaSel)+'</div></div>';
+  h += '<div class="kpi"><div class="kpi-label">🛍 Pedidos</div><div class="kpi-num">'+R(pedTotal)+'</div><div class="kpi-meta">'+(lojaSel==="todas"?R(dados.totalPedidos)+" no total (com gerentes)":"da loja")+'</div></div>';
   h += '<div class="kpi"><div class="kpi-label">👗 Peças</div><div class="kpi-num cyan">'+R(pecasTotal)+'</div><div class="kpi-meta">itens vendidos</div></div>';
   h += '<div class="kpi"><div class="kpi-label">🎯 Ticket Médio</div><div class="kpi-num">R$ '+R(tmGeral)+'</div><div class="kpi-meta">PA '+paGeral.toFixed(1)+' peças/ped</div></div>';
   h += '</div>';
 
-  // Main grid
   h += '<div class="main-grid animate">';
-
-  // Charts
   h += '<div class="charts-col">';
   h += '<div class="chart-card"><div class="chart-title">Faturamento por Vendedor (R$)</div><div style="position:relative;height:180px"><canvas id="cFat" role="img" aria-label="Faturamento por vendedor"></canvas></div></div>';
   h += '<div class="chart-card"><div class="chart-title">Pedidos &amp; Peças por Vendedor</div><div style="position:relative;height:180px"><canvas id="cPed" role="img" aria-label="Pedidos e peças por vendedor"></canvas></div></div>';
   h += '</div>';
 
-  // Vendedores sidebar
   h += '<div>';
   h += '<div class="vendedores-card">';
-  h += '<div class="card-header">Vendedores</div>';
+  h += '<div class="card-header">Vendedores · '+nomeLoja(lojaSel)+'</div>';
   vends.forEach(function(v,i){
-    var pct = fatTotal>0?v.faturamento/fatTotal*100:0;
-    var pa = v.pedidos>0?(v.pecas/v.pedidos).toFixed(1):"—";
-    var meta = getMeta(v.nome);
+    var pct = fatTotal>0 ? v.faturamento/fatTotal*100 : 0;
+    var pa = v.pedidos>0 ? (v.pecas/v.pedidos).toFixed(1) : "—";
+    var meta = metaV(v.nome, lojaSel);
     var status = metaStatus(v.faturamento, meta);
-    var metaPct = meta>0?Math.min(100,(v.faturamento/meta*100)).toFixed(0):null;
+    var metaPct = meta>0 ? Math.min(100,(v.faturamento/meta*100)).toFixed(0) : null;
     h += '<div class="v-item '+(selVendedor===v.nome?"active":"")+'" onclick="selV(\''+v.nome+'\')">';
     h += '<div class="v-top">';
     h += '<div class="v-info"><div class="v-rank">'+medals[i]+'</div><div><div class="v-name">'+v.nome+'</div><div class="v-tags">'+v.pedidos+' ped · PA '+pa+'</div>';
@@ -366,84 +1019,600 @@ function buildDashboard() {
     h += '</div></div>';
     h += '<div><div class="v-fat">R$'+R(v.faturamento)+'</div><div class="v-tm">TM R$'+R(v.ticketMedio)+'</div></div>';
     h += '</div>';
-    if(meta>0) {
+    if(meta>0){
       var barPct = Math.min(100,(v.faturamento/meta*100)).toFixed(1);
       h += '<div class="meta-bar" style="margin-bottom:6px"><div class="meta-bar-fill '+status+'" style="width:'+barPct+'%"></div></div>';
     }
     h += '<div class="v-bar"><div class="v-bar-fill" style="width:'+pct.toFixed(1)+'%"></div></div>';
     h += '</div>';
   });
-  if(ger){
-    h += '<div class="v-gerentes"><span>👔 Gerentes</span><span>R$ '+R(ger.faturamento)+' · '+ger.pedidos+' ped</span></div>';
-  }
+  if(ger) h += '<div class="v-gerentes"><span>👔 Gerentes</span><span>R$ '+R(ger.faturamento)+' · '+ger.pedidos+' ped</span></div>';
   h += '</div>';
 
-  // Detalhe
-  var vd = dados.vendedores.find(function(x){return x.nome===selVendedor;});
+  var vd = vends.find(function(x){ return x.nome===selVendedor; });
   if(vd){
-    var pa = vd.pedidos>0?(vd.pecas/vd.pedidos).toFixed(1):"—";
-    var op = ops.filter(function(r){return r.vendedor===vd.nome;});
-    var score = op.length>0?(op.reduce(function(s,r){return s+["vmLoja","araras","vitrine","passadoria","cadastro","posVenda"].filter(function(k){return r[k];}).length;},0)/op.length).toFixed(1):"—";
-    var pct = fatTotal>0?(vd.faturamento/fatTotal*100).toFixed(1):0;
+    var pa2 = vd.pedidos>0 ? (vd.pecas/vd.pedidos).toFixed(1) : "—";
+    var op = ops.filter(function(r){ return r.vendedor===vd.nome; });
+    var score = op.length>0 ? (op.reduce(function(s,r){ return s+["vmLoja","araras","vitrine","passadoria","cadastro","posVenda"].filter(function(k){ return r[k]; }).length; },0)/op.length).toFixed(1) : "—";
+    var pct2 = fatTotal>0 ? (vd.faturamento/fatTotal*100).toFixed(1) : 0;
     h += '<div class="detalhe-card" style="margin-top:12px">';
     h += '<div class="detalhe-nome">'+vd.nome+'</div>';
-    h += '<div class="detalhe-rank">'+vds_rank(vd.nome,vends)+' no ranking · '+pct+'% do faturamento</div>';
+    h += '<div class="detalhe-rank">'+vds_rank(vd.nome,vends)+' no ranking · '+pct2+'% do faturamento</div>';
     h += '<div class="stats-grid">';
     [
       ["Faturamento","R$ "+R(vd.faturamento),"gold"],
       ["Ticket Médio","R$ "+R(vd.ticketMedio),""],
       ["Peças",R(vd.pecas),""],
       ["Pedidos",R(vd.pedidos),""],
-      ["PA",pa,"gold"],
-      ["Score Op.",score!=="—"?score+"/6":"—",""],
+      ["PA",pa2,"gold"],
+      ["Score Op.",score!=="—"?score+"/6":"—",""]
     ].forEach(function(s){
       h += '<div class="stat"><div class="stat-label">'+s[0]+'</div><div class="stat-val '+(s[2]||'')+'">'+s[1]+'</div></div>';
     });
     h += '</div>';
-    h += '<div class="part-bar-wrap"><div class="part-bar-top"><span>Participação</span><span>'+pct+'%</span></div><div class="part-bar"><div class="part-bar-fill" style="width:'+pct+'%"></div></div></div>';
+    h += '<div class="part-bar-wrap"><div class="part-bar-top"><span>Participação</span><span>'+pct2+'%</span></div><div class="part-bar"><div class="part-bar-fill" style="width:'+pct2+'%"></div></div></div>';
     h += '</div>';
   }
-  h += '</div>';
-  h += '</div>';
+  h += '</div></div>';
 
   document.getElementById("tab-dashboard").innerHTML = h;
 
-  // Charts
-  var co = {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:"#55545c",font:{size:11}},grid:{color:"rgba(255,255,255,0.04)"}},y:{ticks:{color:"#55545c",font:{size:10}},grid:{color:"rgba(255,255,255,0.05)"}}}};
-
-  chartFat = new Chart(document.getElementById("cFat"),{
+  mkChart("cFat", {
     type:"bar",
-    data:{labels:labels,datasets:[{data:vends.map(function(v){return Math.round(v.faturamento);}),backgroundColor:cores,borderRadius:6,borderSkipped:false}]},
-    options:Object.assign({},co,{scales:{x:co.scales.x,y:{ticks:{color:"#55545c",font:{size:10},callback:function(v){return "R$"+R(v);}},grid:{color:"rgba(255,255,255,0.05)"}}}})
+    data:{ labels:labels, datasets:[{ data:vends.map(function(v){ return Math.round(v.faturamento); }), backgroundColor:cores, borderRadius:6, borderSkipped:false }] },
+    options:Object.assign({},CO_BASE,{ scales:{ x:CO_BASE.scales.x, y:eixoReais() } })
   });
-
-  chartPed = new Chart(document.getElementById("cPed"),{
+  mkChart("cPed", {
     type:"bar",
-    data:{labels:labels,datasets:[
-      {label:"Pedidos",data:vends.map(function(v){return v.pedidos;}),backgroundColor:cores,borderRadius:4,borderSkipped:false},
-      {label:"Peças",data:vends.map(function(v){return v.pecas;}),backgroundColor:cores.map(function(c){return c+"55";}),borderRadius:4,borderSkipped:false}
+    data:{ labels:labels, datasets:[
+      { label:"Pedidos", data:vends.map(function(v){ return v.pedidos; }), backgroundColor:cores, borderRadius:4, borderSkipped:false },
+      { label:"Peças", data:vends.map(function(v){ return v.pecas; }), backgroundColor:cores.map(function(c){ return c+"55"; }), borderRadius:4, borderSkipped:false }
     ]},
-    options:Object.assign({},co,{plugins:{legend:{display:true,labels:{color:"#8b8a94",font:{size:11},boxWidth:10,boxHeight:10}}}})
+    options:Object.assign({},CO_BASE,{ plugins:{ legend:{ display:true, labels:{ color:"#8b8a94", font:{size:11}, boxWidth:10, boxHeight:10 } } } })
   });
 }
 
-function vds_rank(nome, vends) {
-  var i = vends.findIndex(function(v){return v.nome===nome;});
+function vds_rank(nome, vends){
+  var i = vends.findIndex(function(v){ return v.nome===nome; });
   return i===0?"1º":i===1?"2º":i===2?"3º":(i+1)+"º";
 }
+function selV(nome){ selVendedor=nome; buildDashboard(); }
 
-function selV(nome) { selVendedor=nome; buildDashboard(); }
+/* ══ ABA: 📅 HOJE ══════════════════════════════════════════════════ */
+function buildHoje(){
+  var el = document.getElementById("tab-hoje");
+  if(!dadosHoje){ el.innerHTML = esqueleto("Buscando as vendas de hoje no Bling...","Isso costuma levar poucos segundos"); return; }
 
-function buildRanking() {
-  if(!dados){ document.getElementById("tab-ranking").innerHTML='<div style="color:var(--text3);text-align:center;padding:60px">Carregue os dados primeiro</div>'; return; }
-  var vends = dados.vendedores.filter(function(v){return v.nome!=="Gerentes";});
-  var ger = dados.vendedores.find(function(v){return v.nome==="Gerentes";});
-  var fatTotal = vends.reduce(function(s,v){return s+v.faturamento;},0);
+  var d = new Date();
+  var lojas = lojasAtivas();
+  var semMeta = metaLoja(lojaSel)===0;
+  var fracD = fracHoje();
+  var realizada = serieRealizada(lojaSel);
+
+  var h = "";
+  h += '<div class="hoje-head">';
+  h += '<div><div class="hoje-data">'+fmtLongo(hoje)+' · <span>'+pad2(d.getHours())+":"+pad2(d.getMinutes())+'</span></div>';
+  h += '<div class="hoje-sub">'+nomeLoja(lojaSel)+' · '+(Math.round(fracD*100))+'% do dia de loja decorrido ('+HORA_ABRE+'h–'+HORA_FECHA+'h)</div></div>';
+  h += '</div>';
+
+  if(!hist && !histErro) h += '<div class="info-note">⏳ Ainda aprendendo a distribuição por dia da semana com o Bling. Até terminar, a meta do dia é dividida igualmente entre os dias abertos.</div>';
+  else if(histErro) h += '<div class="info-note">⚠️ Histórico indisponível ('+histErro+'). Metas do dia divididas igualmente entre os dias abertos.</div>';
+  if(semMeta) h += '<div class="info-note">🎯 Nenhuma meta definida para <b>'+nomeLoja(lojaSel)+'</b> ainda. Vá em <b>🎯 Metas</b> para definir a meta mensal de cada vendedor — o resto é calculado automaticamente.</div>';
+
+  // ── Cards por vendedor × loja ──
+  var alertas = [];
+  var totalRealHoje = 0, totalMetaHoje = 0;
+  var cards = "";
+
+  lojas.forEach(function(lojaId){
+    var fechada = !abreEm(lojaId, hoje);
+    NOMES_V.forEach(function(nome){
+      var meta = metaV(nome, lojaId);
+      var real = fatV(dadosHoje, nome, lojaId);
+      var metaDia = metaDiaV(nome, lojaId, hoje);
+      if(fechada && real===0 && metaDia===0) return;   // loja fechada, nada a mostrar
+      if(meta===0 && real===0) return;                  // sem meta e sem venda
+      totalRealHoje += real; totalMetaHoje += metaDia;
+
+      var pct = metaDia>0 ? real/metaDia*100 : (real>0?100:0);
+      var st = metaDia>0 ? statusPct(pct) : "neutro";
+      var cor = st==="ok" ? "var(--cyan)" : st==="warn" ? "var(--gold)" : st==="danger" ? "var(--red)" : "var(--text3)";
+      var falta = metaDia - real;
+
+      cards += '<div class="hj-card '+st+'">';
+      cards += '<div class="ring" style="--ring-p:'+Math.min(100,Math.max(0,pct)).toFixed(0)+';--ring-c:'+cor+'"><div class="ring-txt" style="color:'+cor+'">'+(metaDia>0?Math.round(pct)+"%":"—")+'</div></div>';
+      cards += '<div class="hj-body">';
+      cards += '<div class="hj-nome">'+(EMOJI_V[nome]||"👤")+' '+nome;
+      if(lojaSel==="todas") cards += ' <span class="hj-loja">'+LOJAS[lojaId].emoji+' '+LOJAS[lojaId].nome+'</span>';
+      cards += '</div>';
+      cards += '<div class="hj-vals"><b>R$ '+R(real)+'</b>'+(metaDia>0?' de R$ '+R(metaDia):'')+' · '+pedV(dadosHoje,nome,lojaId)+' ped</div>';
+      if(fechada) cards += '<div class="hj-falta">🚪 Loja fechada hoje</div>';
+      else if(metaDia<=0) cards += '<div class="hj-falta">Sem meta definida</div>';
+      else if(falta<=0) cards += '<div class="hj-falta ok">🎉 Meta do dia batida · +R$ '+R(-falta)+'</div>';
+      else cards += '<div class="hj-falta '+st+'">Faltam R$ '+R(falta)+' para a meta de hoje</div>';
+      cards += '<div class="hj-bar"><div class="hj-bar-fill '+(st==="neutro"?"warn":st)+'" style="width:'+Math.min(100,Math.max(0,pct)).toFixed(1)+'%"></div></div>';
+      cards += '</div></div>';
+
+      // ── Alertas em tempo real ──
+      if(fechada || metaDia<=0) return;
+      var esperadoAgora = metaDia*fracD;
+      if(pct>=100){
+        alertas.push({ t:"ok", ico:"🎉", txt:"<b>"+nome+"</b> já bateu a meta de hoje"+(lojaSel==="todas"?" na "+LOJAS[lojaId].nome:"")+" — R$ "+R(real)+" de R$ "+R(metaDia)+"." });
+      } else if(real >= esperadoAgora){
+        alertas.push({ t:"ok", ico:"✅", txt:"<b>"+nome+"</b> está no ritmo: R$ "+R(real)+" com "+Math.round(fracD*100)+"% do dia — precisa de R$ "+R(falta)+" até fechar." });
+      } else if(real >= esperadoAgora*0.7){
+        alertas.push({ t:"warn", ico:"⚡", txt:"<b>"+nome+"</b> está um pouco atrás do ritmo (R$ "+R(real)+" vs R$ "+R(esperadoAgora)+" esperados agora). Faltam R$ "+R(falta)+"." });
+      } else {
+        alertas.push({ t:"danger", ico:"🚨", txt:"<b>"+nome+"</b> está <b>R$ "+R(esperadoAgora-real)+" abaixo do ritmo</b> do dia"+(lojaSel==="todas"?" na "+LOJAS[lojaId].nome:"")+". Faltam R$ "+R(falta)+" para a meta de hoje." });
+      }
+    });
+  });
+
+  // ── Alerta de ritmo do mês + meta ajustada ──
+  var realMes = 0, metaMesTotal = 0, esperadoMes = 0;
+  NOMES_V.forEach(function(nome){
+    realMes += fatV(dadosMes||dados, nome, lojaSel);
+    metaMesTotal += metaV(nome, lojaSel);
+    esperadoMes += metaAcumV(nome, lojaSel, hoje, fracD);
+  });
+  if(metaMesTotal>0 && (dadosMes||dados)){
+    var difMes = realMes - esperadoMes;
+    if(difMes >= 0){
+      alertas.unshift({ t:"ok", ico:"📈", txt:"Mês <b>no azul</b>: R$ "+R(realMes)+" acumulados, R$ "+R(difMes)+" <b>acima</b> do ritmo necessário para bater R$ "+R(metaMesTotal)+"." });
+    } else {
+      var restante = fracRestanteMedia();
+      var ajuste = restante>0 ? (metaMesTotal-realMes) : 0;
+      alertas.unshift({ t:"danger", ico:"📉", txt:"Mês <b>atrasado</b>: R$ "+R(-difMes)+" abaixo do ritmo. Faltam R$ "+R(metaMesTotal-realMes)+" e "+diasAbertosRestantes()+" dias de loja — <b>R$ "+R(ajuste/Math.max(1,diasAbertosRestantes()))+"/dia</b> em média." });
+    }
+  }
+
+  // KPIs do dia
+  h += '<div class="kpi-row">';
+  h += '<div class="kpi"><div class="kpi-label">💰 Vendido hoje</div><div class="kpi-num gold sm">R$ '+R(totalRealHoje)+'</div><div class="kpi-meta">'+nomeLoja(lojaSel)+'</div></div>';
+  h += '<div class="kpi"><div class="kpi-label">🎯 Meta de hoje</div><div class="kpi-num sm">R$ '+R(totalMetaHoje)+'</div><div class="kpi-meta">'+(hist?"aprendida do Bling":"divisão simples")+'</div></div>';
+  var pctDia = totalMetaHoje>0 ? totalRealHoje/totalMetaHoje*100 : 0;
+  var stDia = totalMetaHoje>0 ? statusPct(pctDia) : "neutro";
+  h += '<div class="kpi"><div class="kpi-label">📊 Atingimento</div><div class="kpi-num sm '+(stDia==="ok"?"cyan":stDia==="danger"?"red":"gold")+'">'+(totalMetaHoje>0?Math.round(pctDia)+"%":"—")+'</div><div class="kpi-meta">'+(totalMetaHoje>0?"esperado agora: "+Math.round(fracD*100)+"%":"defina as metas")+'</div></div>';
+  h += '<div class="kpi"><div class="kpi-label">📅 Mês</div><div class="kpi-num sm">R$ '+Rk(realMes)+'</div><div class="kpi-meta">'+(metaMesTotal>0?"de R$ "+Rk(metaMesTotal)+" ("+Math.round(realMes/metaMesTotal*100)+"%)":"sem meta")+'</div></div>';
+  h += '</div>';
+
+  if(alertas.length){
+    h += '<div class="sec-title">🔔 Alertas em tempo real</div>';
+    h += '<div class="alertas">';
+    var ordem = { danger:0, warn:1, ok:2, info:3 };
+    alertas.sort(function(a,b){ return ordem[a.t]-ordem[b.t]; }).forEach(function(a){
+      h += '<div class="alerta '+a.t+'"><span class="alerta-ico">'+a.ico+'</span><span>'+a.txt+'</span></div>';
+    });
+    h += '</div>';
+  }
+
+  h += '<div class="sec-title">👥 Progresso de hoje por vendedor</div>';
+  h += cards ? '<div class="hoje-grid">'+cards+'</div>'
+             : '<div class="empty">Nenhum vendedor com meta ou venda hoje em '+nomeLoja(lojaSel)+'.</div>';
+
+  // ── Calendário do mês ──
+  h += calendarioHTML(realizada);
+
+  el.innerHTML = h;
+}
+
+// Dias de loja que ainda restam no mês (inclusive hoje)
+function diasAbertosRestantes(){
+  var d = new Date(), n = diasNoMes(d.getFullYear(), d.getMonth()), c = 0;
+  for(var dia=d.getDate(); dia<=n; dia++){
+    var s = d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(dia);
+    if(lojaSel==="todas"){ if(IDS_LOJAS.some(function(id){ return abreEm(id,s); })) c++; }
+    else if(abreEm(lojaSel,s)) c++;
+  }
+  return c;
+}
+function fracRestanteMedia(){
+  var lojas = lojasAtivas();
+  return lojas.reduce(function(s,id){ return s+fracRestante(id,hoje); },0)/lojas.length;
+}
+
+function calendarioHTML(realizada){
+  var d = new Date(), ano = d.getFullYear(), mes = d.getMonth();
+  var n = diasNoMes(ano,mes);
+  var primeiroDow = new Date(ano,mes,1).getDay();
+  var temMeta = metaLoja(lojaSel)>0;
+
+  var h = '<div class="cal-card"><div class="chart-title">🗓 '+MESES[mes]+' '+ano+' · '+nomeLoja(lojaSel)+(temMeta?' · realizado vs meta do dia':' · faturamento diário')+'</div>';
+  h += '<div class="cal">';
+  DIAS_C.forEach(function(x){ h += '<div class="cal-head">'+x+'</div>'; });
+  for(var i=0;i<primeiroDow;i++) h += '<div class="cal-cell vazio"></div>';
+
+  var evsAno = eventosDoAno(ano);
+  for(var dia=1; dia<=n; dia++){
+    var s = ano+"-"+pad2(mes+1)+"-"+pad2(dia);
+    var real = realizada[s] || 0;
+    var metaDia = metaDiaLoja(lojaSel, s);
+    var aberta = lojaSel==="todas" ? IDS_LOJAS.some(function(id){ return abreEm(id,s); }) : abreEm(lojaSel,s);
+    var futuro = s > hoje;
+    var ev = evsAno.find(function(e){ return s===e.data; });
+
+    var cls = "cal-cell";
+    if(s===hoje) cls += " hoje";
+    if(!aberta) cls += " fechado";
+    else if(futuro) cls += " futuro";
+    else if(temMeta && metaDia>0) cls += " "+statusPct(real/metaDia*100);
+    else if(real>0) cls += " ok";
+
+    var titulo = fmtDM(s)+" ("+DIAS[dow(s)]+")";
+    if(!aberta) titulo += " — fechada";
+    else {
+      titulo += " — realizado R$ "+R(real);
+      if(metaDia>0) titulo += " / meta R$ "+R(metaDia)+" ("+Math.round(real/metaDia*100)+"%)";
+    }
+    if(ev) titulo += " · "+ev.nome;
+
+    h += '<div class="'+cls+'" title="'+titulo+'">';
+    h += '<div style="display:flex;justify-content:space-between;align-items:flex-start"><span class="cal-dia">'+dia+'</span>'+(ev?'<span class="cal-ev">'+ev.emoji+'</span>':'')+'</div>';
+    if(!aberta) h += '<div class="cal-val">—</div>';
+    else if(futuro) h += '<div class="cal-val">'+(metaDia>0?R(metaDia/1000,1)+"k":"")+'</div>';
+    else h += '<div class="cal-val">'+(real>0?R(real/1000,1)+"k":"0")+'</div>';
+    h += '</div>';
+  }
+  h += '</div>';
+  h += '<div class="cal-legend">';
+  h += '<div><span class="lg-dot" style="background:rgba(6,214,160,0.5)"></span>Meta batida</div>';
+  h += '<div><span class="lg-dot" style="background:rgba(240,180,41,0.5)"></span>70–99%</div>';
+  h += '<div><span class="lg-dot" style="background:rgba(239,71,111,0.5)"></span>Abaixo de 70%</div>';
+  h += '<div><span class="lg-dot" style="background:rgba(255,255,255,0.08);border:1px dashed var(--border2)"></span>Fechada</div>';
+  h += '<div><span class="lg-dot" style="box-shadow:0 0 0 2px var(--gold);background:transparent"></span>Hoje</div>';
+  h += '<div style="color:var(--text3)">Valores em milhares (k). Dias futuros mostram a meta prevista.</div>';
+  h += '</div></div>';
+  return h;
+}
+
+/* ══ ABA: 📊 SEMANA ════════════════════════════════════════════════ */
+function buildSemana(){
+  var el = document.getElementById("tab-semana");
+  if(carregandoHist && !hist){ el.innerHTML = esqueleto("Aprendendo com os últimos "+mesesHist+" meses do Bling...","Na primeira vez pode levar até 2 minutos"); return; }
+  if(!hist){ el.innerHTML = histErro ? erroBackendHTML("Não foi possível carregar o histórico: "+histErro) : esqueleto("Carregando histórico...",""); return; }
+
+  var src = fonteHist(lojaSel);
+  if(!src || !src.diaSemana){ el.innerHTML = '<div class="empty">Sem histórico para '+nomeLoja(lojaSel)+'.</div>'; return; }
+
+  var abertos = src.diaSemana.filter(function(b){ return lojaSel==="todas" ? true : b.abre; });
+  var comVenda = abertos.filter(function(b){ return b.dias>0; });
+  var somaPeso = abertos.reduce(function(s,b){ return s+b.peso; },0) || 1;
+  var melhor = comVenda.slice().sort(function(a,b){ return b.mediaDia-a.mediaDia; })[0];
+  var pior = comVenda.slice().sort(function(a,b){ return a.mediaDia-b.mediaDia; })[0];
+
+  var h = mesesSelectorHTML();
+  h += '<div class="info-note">📚 Distribuição aprendida com <b>'+R(src.pedidosTotal)+' pedidos</b> em '+src.diasComVenda+' dias de venda ('+fmtDM(hist.periodo.inicio)+' a '+fmtDM(hist.periodo.fim)+'). É essa curva que divide a meta mensal entre os dias.</div>';
+
+  h += '<div class="kpi-row">';
+  h += '<div class="kpi"><div class="kpi-label">🏆 Dia mais forte</div><div class="kpi-num gold sm">'+(melhor?melhor.nome:"—")+'</div><div class="kpi-meta">'+(melhor?"R$ "+R(melhor.mediaDia)+" / dia · "+(melhor.peso/somaPeso*100).toFixed(0)+"% da semana":"")+'</div></div>';
+  h += '<div class="kpi"><div class="kpi-label">🥀 Dia mais fraco</div><div class="kpi-num sm">'+(pior?pior.nome:"—")+'</div><div class="kpi-meta">'+(pior?"R$ "+R(pior.mediaDia)+" / dia · "+(pior.peso/somaPeso*100).toFixed(0)+"% da semana":"")+'</div></div>';
+  h += '<div class="kpi"><div class="kpi-label">📊 Média diária</div><div class="kpi-num cyan sm">R$ '+R(src.mediaDiaria)+'</div><div class="kpi-meta">dias com venda</div></div>';
+  h += '<div class="kpi"><div class="kpi-label">🎯 Ticket médio</div><div class="kpi-num sm">R$ '+R(src.ticketMedio)+'</div><div class="kpi-meta">no período</div></div>';
+  h += '</div>';
+
+  h += '<div class="chart-card"><div class="chart-title">Faturamento médio por dia da semana (R$)</div><div style="position:relative;height:210px"><canvas id="cSem" role="img" aria-label="Faturamento médio por dia da semana"></canvas></div></div>';
+
+  h += '<div class="sec-title">📋 Peso de cada dia da semana <span class="hint">(% do faturamento semanal)</span></div>';
+  h += '<div class="chart-card"><div class="tbl-wrap"><table class="tbl"><thead><tr>';
+  ["Dia","Peso","Média/dia","Ticket médio","Pedidos","Dias","Distribuição"].forEach(function(t){ h += '<th>'+t+'</th>'; });
+  h += '</tr></thead><tbody>';
+  src.diaSemana.forEach(function(b){
+    var fechado = lojaSel!=="todas" && !b.abre;
+    var pesoRel = fechado ? 0 : b.peso/somaPeso*100;
+    h += '<tr class="'+(fechado?"mudo":(melhor&&b.dia===melhor.dia?"destaque":""))+'">';
+    h += '<td class="nome">'+b.nome+(fechado?' 🚪':(melhor&&b.dia===melhor.dia?' 🏆':''))+'</td>';
+    h += '<td class="'+(fechado?"":"gold")+'">'+(fechado?"fechada":pesoRel.toFixed(1)+"%")+'</td>';
+    h += '<td>'+(b.dias>0?"R$ "+R(b.mediaDia):"—")+'</td>';
+    h += '<td>'+(b.pedidos>0?"R$ "+R(b.ticketMedio):"—")+'</td>';
+    h += '<td>'+R(b.pedidos)+'</td>';
+    h += '<td>'+b.dias+'</td>';
+    h += '<td><div class="mini-bar"><div class="mini-bar-fill" style="width:'+Math.min(100,pesoRel/Math.max(1,(melhor?melhor.peso/somaPeso*100:1))*100).toFixed(0)+'%"></div></div></td>';
+    h += '</tr>';
+  });
+  h += '</tbody></table></div></div>';
+
+  h += '<div class="sec-title">📆 Peso de cada semana do mês</div>';
+  h += '<div class="chart-card"><div style="position:relative;height:180px"><canvas id="cSemMes" role="img" aria-label="Peso por semana do mês"></canvas></div></div>';
+  h += '<div class="chart-card"><div class="tbl-wrap"><table class="tbl"><thead><tr>';
+  ["Semana","Período","Peso","Média/dia","Pedidos"].forEach(function(t){ h += '<th>'+t+'</th>'; });
+  h += '</tr></thead><tbody>';
+  var maxSem = Math.max.apply(null, src.semanaMes.map(function(s){ return s.peso; })) || 1;
+  src.semanaMes.forEach(function(s){
+    h += '<tr class="'+(s.peso===maxSem?"destaque":"")+'"><td class="nome">'+s.semana+'ª semana'+(s.peso===maxSem?' 🏆':'')+'</td>';
+    h += '<td>'+s.rotulo+'</td><td class="gold">'+(s.peso*100).toFixed(1)+'%</td>';
+    h += '<td>'+(s.dias>0?"R$ "+R(s.mediaDia):"—")+'</td><td>'+R(s.pedidos)+'</td></tr>';
+  });
+  h += '</tbody></table></div></div>';
+
+  if(melhor && pior && pior.mediaDia>0){
+    var razao = (melhor.mediaDia/pior.mediaDia).toFixed(1);
+    h += '<div class="info-note cyan">💡 <b>'+melhor.nome+'</b> vende <b>'+razao+'x</b> mais que <b>'+pior.nome+'</b> em média. Escala cheia e foco de ação no '+melhor.nome.toLowerCase()+' rendem mais que esforço extra no '+pior.nome.toLowerCase()+'.</div>';
+  }
+
+  el.innerHTML = h;
+
+  var labels = src.diaSemana.map(function(b){ return DIAS_C[b.dia]; });
+  var vals = src.diaSemana.map(function(b){ return (lojaSel!=="todas" && !b.abre) ? 0 : Math.round(b.mediaDia); });
+  var cores = src.diaSemana.map(function(b){
+    if(lojaSel!=="todas" && !b.abre) return "rgba(255,255,255,0.06)";
+    return (melhor && b.dia===melhor.dia) ? "#f0b429" : "rgba(240,180,41,0.35)";
+  });
+  mkChart("cSem", {
+    type:"bar",
+    data:{ labels:labels, datasets:[{ data:vals, backgroundColor:cores, borderRadius:6, borderSkipped:false }] },
+    options:Object.assign({},CO_BASE,{ scales:{ x:CO_BASE.scales.x, y:eixoReais() } })
+  });
+  mkChart("cSemMes", {
+    type:"bar",
+    data:{ labels:src.semanaMes.map(function(s){ return s.semana+"ª"; }),
+           datasets:[{ data:src.semanaMes.map(function(s){ return +(s.peso*100).toFixed(1); }), backgroundColor:"#06d6a0", borderRadius:6, borderSkipped:false }] },
+    options:Object.assign({},CO_BASE,{ scales:{ x:CO_BASE.scales.x, y:{ ticks:{color:"#55545c",font:{size:10},callback:function(v){ return v+"%"; }}, grid:{color:"rgba(255,255,255,0.05)"} } } })
+  });
+}
+
+function mesesSelectorHTML(){
+  return '<div class="pill-group">'+[6,12,18].map(function(m){
+    return '<button class="pill'+(m===mesesHist?" active":"")+'" onclick="setMesesHist('+m+')">'+m+' meses</button>';
+  }).join("")+'<span style="font-size:10.5px;color:var(--text3);align-self:center;margin-left:4px">janela de aprendizado</span></div>';
+}
+function setMesesHist(m){
+  if(m===mesesHist) return;
+  mesesHist = m; hist = null; invalidarDist();
+  render(abaAtual);
+  garantirHist(true);
+}
+
+/* ══ ABA: 📈 MÊS ═══════════════════════════════════════════════════ */
+function buildMes(){
+  var el = document.getElementById("tab-mes");
+  var base = dadosMes || dados;
+  if(!base){ el.innerHTML = esqueleto("Carregando vendas do mês...",""); return; }
+
+  var d = new Date(), ano = d.getFullYear(), mes = d.getMonth();
+  var n = diasNoMes(ano,mes);
+  var fracD = fracHoje();
+  var lojas = lojasAtivas();
+
+  // fração média do mês já decorrida (ponderada pelas lojas ativas)
+  var fracDec = lojas.reduce(function(s,id){ return s+fracAcum(id,hoje,fracD); },0)/lojas.length;
+  var diasRest = diasAbertosRestantes();
+
+  var linhas = NOMES_V.map(function(nome){
+    var meta = metaV(nome, lojaSel);
+    var real = fatV(base, nome, lojaSel);
+    // projeção somada por loja (cada loja tem sua própria curva de dias)
+    var proj = 0;
+    lojas.forEach(function(id){
+      var r = fatV(base, nome, id);
+      var f = fracAcum(id, hoje, fracD);
+      proj += f>0 ? r/f : r;
+    });
+    var esperadoAgora = metaAcumV(nome, lojaSel, hoje, fracD);
+    var falta = Math.max(0, meta-real);
+    return {
+      nome: nome, meta: meta, real: real, proj: proj,
+      esperadoAgora: esperadoAgora, falta: falta,
+      pct: meta>0 ? real/meta*100 : 0,
+      pctProj: meta>0 ? proj/meta*100 : 0,
+      porDia: diasRest>0 ? falta/diasRest : falta
+    };
+  }).sort(function(a,b){ return b.real-a.real; });
+
+  var totMeta = linhas.reduce(function(s,l){ return s+l.meta; },0);
+  var totReal = linhas.reduce(function(s,l){ return s+l.real; },0);
+  var totProj = linhas.reduce(function(s,l){ return s+l.proj; },0);
+
+  var h = "";
+  if(!hist && !histErro) h += '<div class="info-note">⏳ Projeção usando divisão simples dos dias. Ao terminar de aprender o histórico, ela passa a considerar o peso real de cada dia da semana.</div>';
+  if(totMeta===0) h += '<div class="info-note">🎯 Defina as metas de <b>'+nomeLoja(lojaSel)+'</b> na aba <b>🎯 Metas</b> para ver progresso e projeção.</div>';
+
+  h += '<div class="kpi-row">';
+  h += '<div class="kpi"><div class="kpi-label">💰 Realizado</div><div class="kpi-num gold sm">R$ '+R(totReal)+'</div><div class="kpi-meta">'+MESES[mes]+' · '+nomeLoja(lojaSel)+'</div></div>';
+  h += '<div class="kpi"><div class="kpi-label">🎯 Meta do mês</div><div class="kpi-num sm">R$ '+R(totMeta)+'</div><div class="kpi-meta">'+(totMeta>0?Math.round(totReal/totMeta*100)+"% atingido":"não definida")+'</div></div>';
+  var stProj = totMeta>0 ? statusPct(totProj/totMeta*100) : "neutro";
+  h += '<div class="kpi"><div class="kpi-label">🔮 Projeção</div><div class="kpi-num sm '+(stProj==="ok"?"cyan":stProj==="danger"?"red":"gold")+'">R$ '+R(totProj)+'</div><div class="kpi-meta">'+(totMeta>0?Math.round(totProj/totMeta*100)+"% da meta":"no ritmo atual")+'</div></div>';
+  h += '<div class="kpi"><div class="kpi-label">📅 Restam</div><div class="kpi-num sm">'+diasRest+'</div><div class="kpi-meta">dias de loja · '+Math.round(fracDec*100)+'% do mês feito</div></div>';
+  h += '</div>';
+
+  if(totMeta>0){
+    var faltaTot = Math.max(0, totMeta-totReal);
+    if(totProj>=totMeta){
+      h += '<div class="alerta ok" style="margin-bottom:16px"><span class="alerta-ico">🚀</span><span>No ritmo atual a equipe <b>bate a meta</b> e fecha em torno de <b>R$ '+R(totProj)+'</b> (R$ '+R(totProj-totMeta)+' acima).</span></div>';
+    } else {
+      h += '<div class="alerta danger" style="margin-bottom:16px"><span class="alerta-ico">⚠️</span><span>No ritmo atual o mês fecha em <b>R$ '+R(totProj)+'</b> — <b>R$ '+R(totMeta-totProj)+' abaixo</b> da meta. Faltam R$ '+R(faltaTot)+' em '+diasRest+' dias de loja: <b>R$ '+R(diasRest>0?faltaTot/diasRest:faltaTot)+'/dia</b>.</span></div>';
+    }
+  }
+
+  h += '<div class="sec-title">👥 Progresso por vendedor <span class="hint">· barra listrada = projeção</span></div>';
+  linhas.forEach(function(l){
+    var st = l.meta>0 ? statusPct(l.pct) : "neutro";
+    var vered, vClass;
+    if(l.meta===0){ vered="Sem meta"; vClass="neutro"; }
+    else if(l.pct>=100){ vered="Meta batida"; vClass="ok"; }
+    else if(l.pctProj>=100){ vered="Vai bater"; vClass="ok"; }
+    else if(l.pctProj>=85){ vered="No limite"; vClass="warn"; }
+    else { vered="Não bate"; vClass="danger"; }
+
+    h += '<div class="mes-card">';
+    h += '<div class="mes-top"><div><div class="mes-nome">'+(EMOJI_V[l.nome]||"👤")+' '+l.nome+'</div>';
+    h += '<div class="mes-vals"><b>R$ '+R(l.real)+'</b>'+(l.meta>0?' de R$ '+R(l.meta):'')+' · '+pedV(base,l.nome,lojaSel)+' pedidos</div></div>';
+    h += '<div><div class="mes-pct '+st+'">'+(l.meta>0?Math.round(l.pct)+"%":"—")+'</div><div class="mes-pct-l">'+(l.meta>0?"da meta":"defina a meta")+'</div></div></div>';
+
+    if(l.meta>0){
+      var wReal = Math.min(100,l.pct);
+      var wProj = Math.min(100,l.pctProj);
+      h += '<div class="mes-bar-wrap">';
+      if(wProj>wReal) h += '<div class="mes-bar-proj" style="left:'+wReal.toFixed(1)+'%;width:'+(wProj-wReal).toFixed(1)+'%"></div>';
+      h += '<div class="mes-bar-real '+st+'" style="width:'+wReal.toFixed(1)+'%"></div>';
+      var marca = Math.min(100, l.meta>0 ? l.esperadoAgora/l.meta*100 : 0);
+      h += '<div class="mes-marca" style="left:'+marca.toFixed(1)+'%" title="Ritmo necessário até agora"></div>';
+      h += '</div>';
+      h += '<div class="mes-legend"><span>R$ 0</span><span>ritmo esperado hoje: R$ '+R(l.esperadoAgora)+'</span><span>R$ '+R(l.meta)+'</span></div>';
+      h += '<div class="mes-foot"><div class="mes-foot-txt">🔮 Projeção: <b>R$ '+R(l.proj)+'</b>'+
+           (l.falta>0 ? ' · faltam R$ '+R(l.falta)+' → <b>R$ '+R(l.porDia)+'/dia</b> nos '+diasRest+' dias restantes'
+                      : ' · meta já superada em R$ '+R(l.real-l.meta))+'</div>';
+      h += '<div class="veredito '+vClass+'">'+vered+'</div></div>';
+    } else {
+      h += '<div class="mes-foot"><div class="mes-foot-txt">Sem meta definida para esta loja.</div><div class="veredito neutro">Sem meta</div></div>';
+    }
+    h += '</div>';
+  });
+
+  // Histórico mensal
+  var src = fonteHist(lojaSel);
+  if(src && src.meses && src.meses.length){
+    h += '<div class="sec-title">📊 Últimos meses <span class="hint">· índice 1,00 = média do período</span></div>';
+    h += '<div class="chart-card"><div style="position:relative;height:200px"><canvas id="cMeses" role="img" aria-label="Faturamento por mês"></canvas></div></div>';
+    h += '<div class="chart-card"><div class="tbl-wrap"><table class="tbl"><thead><tr>';
+    ["Mês","Faturamento","Índice","Média/dia","Pedidos","Dias"].forEach(function(t){ h += '<th>'+t+'</th>'; });
+    h += '</tr></thead><tbody>';
+    src.meses.slice().reverse().forEach(function(m){
+      h += '<tr class="'+(m.parcial?"mudo":"")+'"><td class="nome">'+m.nome+' '+m.ano+(m.parcial?" (parcial)":"")+'</td>';
+      h += '<td class="gold">R$ '+R(m.faturamento)+'</td>';
+      h += '<td class="'+(m.indice&&m.indice>=1?"cyan":"")+'">'+(m.indice?m.indice.toFixed(2):"—")+'</td>';
+      h += '<td>R$ '+R(m.mediaDia)+'</td><td>'+R(m.pedidos)+'</td><td>'+m.dias+'</td></tr>';
+    });
+    h += '</tbody></table></div></div>';
+  }
+
+  el.innerHTML = h;
+
+  if(src && src.meses && src.meses.length){
+    var labels = src.meses.map(function(m){ return m.rotulo; });
+    var vals = src.meses.map(function(m){ return Math.round(m.faturamento); });
+    var cores = src.meses.map(function(m){ return m.parcial ? "rgba(240,180,41,0.35)" : "#f0b429"; });
+    var ds = [{ label:"Faturado", data:vals, backgroundColor:cores, borderRadius:6, borderSkipped:false }];
+    // projeção do mês corrente
+    if(src.meses[src.meses.length-1].parcial && totProj>0){
+      var projArr = src.meses.map(function(m,i){ return i===src.meses.length-1 ? Math.round(Math.max(0,totProj-m.faturamento)) : 0; });
+      ds.push({ label:"Projeção", data:projArr, backgroundColor:"rgba(6,214,160,0.4)", borderRadius:6, borderSkipped:false });
+    }
+    mkChart("cMeses", {
+      type:"bar",
+      data:{ labels:labels, datasets:ds },
+      options:Object.assign({},CO_BASE,{
+        plugins:{ legend:{ display:ds.length>1, labels:{ color:"#8b8a94", font:{size:11}, boxWidth:10, boxHeight:10 } } },
+        scales:{ x:Object.assign({stacked:true},CO_BASE.scales.x), y:Object.assign({stacked:true},eixoReais()) }
+      })
+    });
+  }
+}
+
+/* ══ ABA: 🗓 SAZONALIDADE ══════════════════════════════════════════ */
+function buildSazonalidade(){
+  var el = document.getElementById("tab-sazonalidade");
+  if(carregandoHist && !hist){ el.innerHTML = esqueleto("Procurando padrões sazonais nos últimos "+mesesHist+" meses...","Na primeira vez pode levar até 2 minutos"); return; }
+  if(!hist){ el.innerHTML = histErro ? erroBackendHTML("Não foi possível carregar o histórico: "+histErro) : esqueleto("Carregando histórico...",""); return; }
+
+  var src = fonteHist(lojaSel);
+  if(!src){ el.innerHTML = '<div class="empty">Sem histórico para '+nomeLoja(lojaSel)+'.</div>'; return; }
+
+  var h = mesesSelectorHTML();
+  var medidos = (src.sazonalidade||[]).filter(function(e){ return e.comHistorico; });
+  h += '<div class="info-note">🗓 '+(medidos.length
+        ? 'Encontramos impacto histórico medido em <b>'+medidos.length+' data(s) comemorativa(s)</b> dentro da janela de '+mesesHist+' meses. Esse impacto é aplicado automaticamente na meta diária dos dias próximos a cada data.'
+        : 'Nenhuma data comemorativa com histórico suficiente na janela de '+mesesHist+' meses. Amplie para <b>12 ou 18 meses</b> acima para capturar Natal, Black Friday, Dia das Mães e Dia dos Pais.')+'</div>';
+
+  // ── Próximas datas (12 meses à frente) ──
+  var ano = new Date().getFullYear();
+  var proximas = eventosDoAno(ano).concat(eventosDoAno(ano+1))
+    .filter(function(e){ return e.data >= hoje; })
+    .sort(function(a,b){ return a.data<b.data?-1:1; })
+    .slice(0,8);
+
+  h += '<div class="sec-title">⏭ Próximas datas <span class="hint">· impacto histórico já aplicado nas metas diárias</span></div>';
+  h += '<div class="saz-grid">';
+  proximas.forEach(function(ev,i){
+    var mult = multAprendido(ev.nome, lojaSel);
+    var dias = Math.round((dt(ev.data)-dt(hoje))/86400000);
+    var impPct = mult ? (mult-1)*100 : null;
+    var cls = impPct==null ? "neutro" : impPct>=25 ? "ok" : impPct>=0 ? "warn" : "danger";
+    h += '<div class="saz-card'+(i===0?" proxima":"")+'">';
+    h += '<div class="saz-top"><div class="saz-emoji">'+ev.emoji+'</div>';
+    h += '<div><div class="saz-nome">'+ev.nome+'</div><div class="saz-data">'+fmtLongo(ev.data)+'</div></div>';
+    h += '<div class="saz-conta"><div class="saz-conta-n">'+(dias===0?"hoje":dias)+'</div><div class="saz-conta-l">'+(dias===0?"é hoje":dias===1?"dia":"dias")+'</div></div></div>';
+    h += '<div class="saz-imp"><div class="saz-imp-n '+cls+'">'+(impPct==null?"—":(impPct>0?"+":"")+impPct.toFixed(0)+"%")+'</div><div class="saz-imp-l">'+(impPct==null?"sem histórico medido":"vs. um dia normal, na janela de "+ev.diasJanela+" dias")+'</div></div>';
+    var metaJanela = 0;
+    for(var k=0;k<ev.diasJanela;k++){
+      var s = ymd(addD(dt(ev.janelaInicio),k));
+      metaJanela += metaDiaLoja(lojaSel, s);
+    }
+    h += '<div class="saz-obs">Janela: '+fmtDM(ev.janelaInicio)+' → '+fmtDM(ev.janelaFim)+
+         (metaJanela>0 ? ' · meta prevista na janela: <b>R$ '+R(metaJanela)+'</b>' : '')+'</div>';
+    h += '</div>';
+  });
+  h += '</div>';
+
+  // ── Impacto medido ──
+  h += '<div class="sec-title">📐 Impacto medido no histórico</div>';
+  if(!medidos.length){
+    h += '<div class="empty">Nenhuma data comemorativa com pelo menos 2 dias de venda dentro da janela analisada.</div>';
+  } else {
+    h += '<div class="chart-card"><div class="tbl-wrap"><table class="tbl"><thead><tr>';
+    ["Data","Quando","Faturado na janela","Esperado","Impacto","Dias medidos"].forEach(function(t){ h += '<th>'+t+'</th>'; });
+    h += '</tr></thead><tbody>';
+    medidos.slice().sort(function(a,b){ return b.impacto-a.impacto; }).forEach(function(e){
+      var imp = e.impacto*100;
+      h += '<tr class="'+(imp>=25?"destaque":"")+'"><td class="nome">'+e.emoji+' '+e.nome+'</td>';
+      h += '<td>'+fmtDM(e.data)+'/'+String(e.ano).slice(2)+' · '+e.diaSemana+'</td>';
+      h += '<td class="gold">R$ '+R(e.faturamento)+'</td><td>R$ '+R(e.esperado)+'</td>';
+      h += '<td class="'+(imp>=0?"cyan":"red")+'">'+(imp>0?"+":"")+imp.toFixed(0)+'%</td>';
+      h += '<td>'+e.diasMedidos+'/'+e.diasJanela+'</td></tr>';
+    });
+    h += '</tbody></table></div></div>';
+  }
+
+  // ── Picos detectados automaticamente ──
+  h += '<div class="sec-title">🔍 Picos detectados automaticamente <span class="hint">· dias 60%+ acima do normal daquele dia da semana</span></div>';
+  if(!src.picos || !src.picos.length){
+    h += '<div class="empty">Nenhum pico fora do padrão detectado no período.</div>';
+  } else {
+    h += '<div class="chart-card"><div class="tbl-wrap"><table class="tbl"><thead><tr>';
+    ["Data","Dia","Faturado","Esperado","Acima","Pedidos","Possível causa"].forEach(function(t){ h += '<th>'+t+'</th>'; });
+    h += '</tr></thead><tbody>';
+    src.picos.forEach(function(p){
+      h += '<tr><td class="nome">'+fmtDM(p.data)+'</td><td>'+p.diaSemana+'</td>';
+      h += '<td class="gold">R$ '+R(p.faturamento)+'</td><td>R$ '+R(p.esperado)+'</td>';
+      h += '<td class="cyan">'+p.razao.toFixed(1)+'x</td><td>'+p.pedidos+'</td>';
+      h += '<td>'+(p.possivelCausa ? p.possivelCausa+(p.distanciaEvento?' <span style="color:var(--text3)">('+p.distanciaEvento+'d)</span>':' <span style="color:var(--text3)">(no dia)</span>') : '<span style="color:var(--text3)">não identificada</span>')+'</td></tr>';
+    });
+    h += '</tbody></table></div></div>';
+  }
+
+  // ── Meses mais fortes ──
+  if(src.mesesFortes && src.mesesFortes.length){
+    h += '<div class="sec-title">🏅 Meses mais fortes do período</div>';
+    h += '<div class="chart-card"><div style="position:relative;height:190px"><canvas id="cFortes" role="img" aria-label="Meses mais fortes"></canvas></div></div>';
+  }
+
+  el.innerHTML = h;
+
+  if(src.mesesFortes && src.mesesFortes.length){
+    mkChart("cFortes", {
+      type:"bar",
+      data:{ labels:src.mesesFortes.map(function(m){ return m.rotulo; }),
+             datasets:[{ data:src.mesesFortes.map(function(m){ return Math.round(m.faturamento); }),
+                         backgroundColor:src.mesesFortes.map(function(_,i){ return i===0?"#f0b429":"rgba(240,180,41,0.35)"; }),
+                         borderRadius:6, borderSkipped:false }] },
+      options:Object.assign({},CO_BASE,{ indexAxis:"y",
+        scales:{ x:eixoReais(), y:{ ticks:{color:"#55545c",font:{size:11}}, grid:{color:"rgba(255,255,255,0.04)"} } } })
+    });
+  }
+}
+
+/* ══ ABA: 🏆 RANKING ═══════════════════════════════════════════════ */
+function buildRanking(){
+  var el = document.getElementById("tab-ranking");
+  if(!dados){ el.innerHTML = '<div class="empty">Carregue os dados primeiro</div>'; return; }
+  var vends = vendedoresDe(dados, lojaSel);
+  var ger = gerentesDe(dados, lojaSel);
+  var fatTotal = vends.reduce(function(s,v){ return s+v.faturamento; },0);
   var medals = ["🥇","🥈","🥉","🏅","🏅"];
+  if(!vends.length){ el.innerHTML = '<div class="empty">Nenhuma venda em '+nomeLoja(lojaSel)+' neste período.</div>'; return; }
   var h = "";
   vends.forEach(function(v,i){
-    var pct = fatTotal>0?(v.faturamento/fatTotal*100).toFixed(1):0;
-    var pa = v.pedidos>0?(v.pecas/v.pedidos).toFixed(1):"—";
+    var pct = fatTotal>0 ? (v.faturamento/fatTotal*100).toFixed(1) : 0;
+    var pa = v.pedidos>0 ? (v.pecas/v.pedidos).toFixed(1) : "—";
     h += '<div class="rk-item '+(i===0?"first":"")+' animate">';
     h += '<div class="rk-row">';
     h += '<div class="rk-left"><div class="rk-medal">'+medals[i]+'</div><div><div class="rk-name">'+v.nome+'</div><div class="rk-meta">'+v.pedidos+' pedidos · '+v.pecas+' peças · PA '+pa+' · TM R$ '+R(v.ticketMedio)+'</div></div></div>';
@@ -452,17 +1621,21 @@ function buildRanking() {
     h += '<div class="rk-bar"><div class="rk-bar-fill" style="width:'+pct+'%"></div></div>';
     h += '</div>';
   });
-  if(ger) h += '<div class="v-gerentes" style="margin-top:10px"><span>👔 Gerentes (Rafael + Lucas)</span><span>R$ '+R(ger.faturamento)+' · '+ger.pedidos+' ped</span></div>';
-  document.getElementById("tab-ranking").innerHTML = h;
+  if(ger) h += '<div class="v-gerentes" style="margin-top:10px"><span>👔 Gerentes</span><span>R$ '+R(ger.faturamento)+' · '+ger.pedidos+' ped</span></div>';
+  el.innerHTML = h;
 }
 
-function buildLancar() {
-  var nomes = dados&&dados.vendedores?dados.vendedores.filter(function(v){return v.nome!=="Gerentes";}).map(function(v){return v.nome;}):["Felipe","Giovana","Guilherme"];
+/* ══ ABA: ＋ LANÇAR ════════════════════════════════════════════════ */
+function buildLancar(){
   var chks = [["vmLoja","VM Loja"],["araras","Araras"],["vitrine","Vitrine"],["passadoria","Passadoria"],["cadastro","Cadastro"],["posVenda","Pós-venda"]];
   var h = '<div class="form-note">💡 Faturamento e pedidos vêm do Bling automaticamente. Registre aqui os dados operacionais do dia.</div>';
   h += '<div class="form-2col">';
-  h += '<div><label class="f-label">Vendedor *</label><select id="fV" class="f-select"><option value="">Selecionar...</option>'+nomes.map(function(n){return '<option>'+n+'</option>';}).join("")+'</select></div>';
+  h += '<div><label class="f-label">Vendedor *</label><select id="fV" class="f-select"><option value="">Selecionar...</option>'+NOMES_V.map(function(n){ return '<option>'+n+'</option>'; }).join("")+'</select></div>';
+  h += '<div><label class="f-label">Loja *</label><select id="fL" class="f-select">'+IDS_LOJAS.map(function(id){ return '<option value="'+id+'"'+(lojaSel===id?" selected":"")+'>'+LOJAS[id].nome+'</option>'; }).join("")+'</select></div>';
+  h += '</div>';
+  h += '<div class="form-2col">';
   h += '<div><label class="f-label">Data *</label><input type="date" id="fD" class="f-input" value="'+hoje+'"></div>';
+  h += '<div></div>';
   h += '</div>';
   h += '<div class="f-section"><div class="f-section-title">Atendimentos</div><div class="form-2col" style="margin:0">';
   h += '<div><label class="f-label">Atend. Loja</label><input type="number" id="fAL" class="f-input" placeholder="0" min="0"></div>';
@@ -477,7 +1650,7 @@ function buildLancar() {
   document.getElementById("tab-lancar").innerHTML = h;
 }
 
-function toggleCk(k) {
+function toggleCk(k){
   checks[k]=!checks[k];
   var el=document.getElementById("ck-"+k), cb=document.getElementById("cb-"+k);
   if(el) el.className="check "+(checks[k]?"on":"");
@@ -486,86 +1659,170 @@ function toggleCk(k) {
   if(sc) sc.textContent=Object.values(checks).filter(Boolean).length+"/6";
 }
 
-function salvar() {
-  var v=document.getElementById("fV").value, d=document.getElementById("fD").value;
-  if(!v||!d){toast("Preencha vendedor e data!","err");return;}
-  var reg={vendedor:v,data:d,atendLoja:document.getElementById("fAL").value,atendWhats:document.getElementById("fAW").value};
-  Object.keys(checks).forEach(function(k){reg[k]=checks[k];});
+function salvar(){
+  var v=document.getElementById("fV").value, d=document.getElementById("fD").value, l=document.getElementById("fL").value;
+  if(!v||!d){ toast("Preencha vendedor e data!","err"); return; }
+  var reg={ vendedor:v, data:d, loja:l, atendLoja:document.getElementById("fAL").value, atendWhats:document.getElementById("fAW").value };
+  Object.keys(checks).forEach(function(k){ reg[k]=checks[k]; });
   ops.push(reg);
-  Object.keys(checks).forEach(function(k){checks[k]=false;});
+  Object.keys(checks).forEach(function(k){ checks[k]=false; });
   toast("✓ Lançamento de "+v+" salvo!");
-  tab("dashboard"); buildDashboard();
+  tab("dashboard");
 }
 
-function buildMetas() {
-  var nomes = dados&&dados.vendedores
-    ? dados.vendedores.filter(function(v){return v.nome!=="Gerentes";}).map(function(v){return v.nome;})
-    : ["Felipe","Giovana","Guilherme"];
-  var avatares = {"Felipe":"👨","Giovana":"👩","Guilherme":"👨‍💼"};
-  var h = '<div style="font-size:11px;color:var(--text3);margin-bottom:20px;padding:12px 14px;background:var(--card);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;line-height:1.5">🎯 Defina a meta mensal de faturamento para cada vendedor. A barra de progresso aparece automaticamente no dashboard.</div>';
-  nomes.forEach(function(nome) {
-    var fat = 0;
-    if(dados) { var vd=dados.vendedores.find(function(v){return v.nome===nome;}); if(vd) fat=vd.faturamento; }
-    var meta = getMeta(nome);
+/* ══ ABA: 🎯 METAS ═════════════════════════════════════════════════ */
+let metaLojaAtiva = IDS_LOJAS[0];
+
+function buildMetas(){
+  var el = document.getElementById("tab-metas");
+  if(lojaSel!=="todas") metaLojaAtiva = lojaSel;
+  var lojaId = metaLojaAtiva;
+  var base = dadosMes || dados;
+
+  var h = '<div class="info-note">🎯 Defina a <b>meta mensal de faturamento</b> de cada vendedor, por loja. O sistema distribui essa meta entre os dias do mês usando o peso real de cada dia da semana aprendido do Bling e o impacto das datas comemorativas.</div>';
+  if(legadoMigrado) h += '<div class="info-note cyan">ℹ️ Encontramos metas salvas no formato antigo (sem loja) e as trouxemos para <b>'+LOJAS[IDS_LOJAS[0]].nome+'</b>. Confira e ajuste a outra loja se precisar.</div>';
+  if(!hist && !histErro) h += '<div class="info-note">⏳ Ainda aprendendo o histórico. A prévia da meta diária abaixo usa divisão simples até terminar.</div>';
+
+  h += '<div class="pill-group">'+IDS_LOJAS.map(function(id){
+    return '<button class="pill'+(id===lojaId?" active":"")+'" onclick="setMetaLoja(\''+id+'\')">'+LOJAS[id].emoji+' '+LOJAS[id].nome+'</button>';
+  }).join("")+'</div>';
+
+  h += '<div class="meta-total-row"><div><div class="meta-total-lbl">Meta total · '+LOJAS[lojaId].nome+'</div>'+
+       '<div style="font-size:11px;color:var(--text3);margin-top:3px">'+LOJAS[lojaId].obs+' · '+diasAbertosNoMes(lojaId)+' dias de loja em '+MESES[new Date().getMonth()]+'</div></div>'+
+       '<div class="meta-total-val" id="meta-total">R$ '+R(metaLoja(lojaId))+'</div></div>';
+
+  NOMES_V.forEach(function(nome){
+    var fat = fatV(base, nome, lojaId);
+    var meta = metaV(nome, lojaId);
     var status = metaStatus(fat, meta);
-    var pct = meta>0?Math.min(100,(fat/meta*100)):0;
+    var pct = meta>0 ? Math.min(100,(fat/meta*100)) : 0;
     h += '<div class="meta-card">';
-    h += '<div class="meta-vendedor"><div class="meta-avatar">'+(avatares[nome]||"👤")+'</div><div><div class="meta-nome">'+nome+'</div><div class="meta-atual">Faturamento atual: <b style="color:var(--gold)">R$ '+R(fat)+'</b></div></div></div>';
-    h += '<div class="meta-input-row"><span class="meta-prefix">R$</span><input type="number" class="meta-input" id="meta-'+nome+'" value="'+(meta||"")+'" placeholder="0,00" min="0" oninput="previewMeta(\''+nome+'\')"></div>';
-    if(meta>0) {
-      var resto = meta-fat;
-      h += '<div class="meta-progress">';
-      h += '<div class="meta-progress-top"><div class="meta-pct '+(status||"warn")+'">'+pct.toFixed(0)+'%</div><div class="meta-resto">'+(resto>0?'Faltam R$ '+R(resto):'Meta atingida! 🎉')+'</div></div>';
-      h += '<div class="meta-bar"><div class="meta-bar-fill '+(status||"warn")+'" id="mbar-'+nome+'" style="width:'+pct.toFixed(1)+'%"></div></div>';
-      h += '</div>';
-    } else {
-      h += '<div id="meta-preview-'+nome+'" style="margin-top:10px"></div>';
-    }
+    h += '<div class="meta-vendedor"><div class="meta-avatar">'+(EMOJI_V[nome]||"👤")+'</div><div><div class="meta-nome">'+nome+'</div>'+
+         '<div class="meta-atual">Faturamento no mês: <b style="color:var(--gold)">R$ '+R(fat)+'</b></div></div></div>';
+    h += '<div class="meta-input-row"><span class="meta-prefix">R$</span><input type="number" class="meta-input" id="meta-'+nome+'" value="'+(meta||"")+'" placeholder="0,00" min="0" step="100" oninput="previewMeta(\''+nome+'\')"></div>';
+    h += '<div id="meta-preview-'+nome+'">'+previewMetaHTML(nome, lojaId, meta, fat, status, pct)+'</div>';
     h += '</div>';
   });
-  h += '<button class="btn-save-metas" onclick="salvarMetas()">Salvar Metas</button>';
-  document.getElementById("tab-metas").innerHTML = h;
+
+  h += '<button class="btn-save-metas" onclick="salvarMetas()">Salvar Metas de '+LOJAS[lojaId].nome+'</button>';
+  el.innerHTML = h;
 }
 
-function previewMeta(nome) {
+function diasAbertosNoMes(lojaId){
+  var d = new Date(), ano=d.getFullYear(), mes=d.getMonth(), n=diasNoMes(ano,mes), c=0;
+  for(var dia=1;dia<=n;dia++){
+    if(abreEm(lojaId, ano+"-"+pad2(mes+1)+"-"+pad2(dia))) c++;
+  }
+  return c;
+}
+
+function previewMetaHTML(nome, lojaId, meta, fat, status, pct){
+  if(!meta || meta<=0) return '';
+  var resto = meta-fat;
+  var h = '<div class="meta-progress">';
+  h += '<div class="meta-progress-top"><div class="meta-pct '+(status||"warn")+'">'+pct.toFixed(0)+'%</div>'+
+       '<div class="meta-resto">'+(resto>0?'Faltam R$ '+R(resto):'Meta atingida! 🎉')+'</div></div>';
+  h += '<div class="meta-bar"><div class="meta-bar-fill '+(status||"warn")+'" style="width:'+pct.toFixed(1)+'%"></div></div>';
+  h += '</div>';
+
+  // Prévia inteligente: como essa meta se traduz em dias
+  var metaHojeV = meta * fracaoDiaPara(lojaId, hoje);
+  var pesos = pesosDS(lojaId);
+  var melhorD = -1, maiorP = 0, piorD = -1, menorP = Infinity;
+  for(var i=0;i<7;i++){
+    if(pesos.pesos[i]<=0) continue;
+    if(pesos.pesos[i]>maiorP){ maiorP=pesos.pesos[i]; melhorD=i; }
+    if(pesos.pesos[i]<menorP){ menorP=pesos.pesos[i]; piorD=i; }
+  }
+  var dist = distMes(lojaId, new Date().getFullYear(), new Date().getMonth());
+  var mediaDia = meta/Math.max(1,diasAbertosNoMes(lojaId));
+  var maxFrac = 0, diaMax = null;
+  Object.keys(dist.porDia).forEach(function(k){ if(dist.porDia[k]>maxFrac){ maxFrac=dist.porDia[k]; diaMax=k; } });
+
+  h += '<div class="meta-dia-hint">';
+  h += '📅 Meta de <b>hoje</b> ('+DIAS[dow(hoje)]+'): <b>R$ '+R(metaHojeV)+'</b> · média simples seria R$ '+R(mediaDia)+'<br>';
+  if(pesos.aprendido && melhorD>=0 && piorD>=0 && melhorD!==piorD){
+    h += '📈 Aprendido do Bling: <b>'+DIAS[melhorD]+'</b> puxa o mês pra cima, <b>'+DIAS[piorD]+'</b> é o mais fraco.<br>';
+  }
+  if(diaMax) h += '🔥 Dia de maior meta no mês: <b>'+fmtDM(diaMax)+'</b> ('+DIAS_C[dow(diaMax)]+') com R$ '+R(meta*maxFrac)+'.';
+  h += '</div>';
+  return h;
+}
+
+// fração do mês que uma data representa, para a loja
+function fracaoDiaPara(lojaId, dataStr){
+  var d = dt(dataStr);
+  var dist = distMes(lojaId, d.getFullYear(), d.getMonth());
+  return dist.porDia[dataStr] || 0;
+}
+
+function setMetaLoja(id){ metaLojaAtiva = id; buildMetas(); }
+
+function previewMeta(nome){
+  var lojaId = metaLojaAtiva;
   var input = document.getElementById("meta-"+nome);
   var meta = Number(input.value) || 0;
-  var fat = 0;
-  if(dados) { var vd=dados.vendedores.find(function(v){return v.nome===nome;}); if(vd) fat=vd.faturamento; }
+  var base = dadosMes || dados;
+  var fat = fatV(base, nome, lojaId);
   var prev = document.getElementById("meta-preview-"+nome);
-  if(!prev || meta===0) return;
-  var pct = Math.min(100,(fat/meta*100));
-  var status = metaStatus(fat,meta);
-  var resto = meta-fat;
-  prev.innerHTML = '<div class="meta-progress"><div class="meta-progress-top"><div class="meta-pct '+(status||"warn")+'">'+pct.toFixed(0)+'%</div><div class="meta-resto">'+(resto>0?'Faltam R$ '+R(resto):'Meta atingida! 🎉')+'</div></div><div class="meta-bar"><div class="meta-bar-fill '+(status||"warn")+'" style="width:'+pct.toFixed(1)+'%"></div></div></div>';
-}
-
-function salvarMetas() {
-  var nomes = dados&&dados.vendedores
-    ? dados.vendedores.filter(function(v){return v.nome!=="Gerentes";}).map(function(v){return v.nome;})
-    : ["Felipe","Giovana","Guilherme"];
-  nomes.forEach(function(nome){
-    var input = document.getElementById("meta-"+nome);
-    if(input) metas[nome] = Number(input.value) || 0;
+  if(prev){
+    var pct = meta>0 ? Math.min(100, fat/meta*100) : 0;
+    prev.innerHTML = previewMetaHTML(nome, lojaId, meta, fat, metaStatus(fat,meta), pct);
+  }
+  // total ao vivo
+  var soma = 0;
+  NOMES_V.forEach(function(n){
+    var i = document.getElementById("meta-"+n);
+    soma += i ? (Number(i.value)||0) : metaV(n,lojaId);
   });
-  try { localStorage.setItem("metas_fat", JSON.stringify(metas)); } catch(e){}
-  toast("✓ Metas salvas!");
-  buildMetas();
-  if(abaAtual==="dashboard") buildDashboard();
+  var tot = document.getElementById("meta-total");
+  if(tot) tot.textContent = "R$ "+R(soma);
 }
 
-// Auto-refresh 15min
+function salvarMetas(){
+  var lojaId = metaLojaAtiva;
+  NOMES_V.forEach(function(nome){
+    var input = document.getElementById("meta-"+nome);
+    if(input) metas[lojaId][nome] = Number(input.value) || 0;
+  });
+  persistirMetas();
+  legadoMigrado = false;
+  invalidarDist();
+  toast("✓ Metas de "+LOJAS[lojaId].nome+" salvas!");
+  buildMetas();
+}
+
+/* ══ AUTO-REFRESH + RELÓGIO ════════════════════════════════════════ */
 var proxAtt = Date.now()+15*60*1000;
-setInterval(function(){ buscarDados(); proxAtt=Date.now()+15*60*1000; }, 15*60*1000);
 setInterval(function(){
-  var s=Math.round((proxAtt-Date.now())/1000);
-  if(s<0)return;
-  var m=Math.floor(s/60), ss=s%60;
-  var el=document.getElementById("countdown");
-  if(el) el.textContent=m+":"+(ss<10?"0":"")+ss;
+  dadosHoje = null; dadosMes = null;
+  buscarDados();
+  proxAtt = Date.now()+15*60*1000;
+}, 15*60*1000);
+
+// Na aba Hoje, revalida as vendas do dia a cada 5 min
+setInterval(function(){ if(abaAtual==="hoje") garantirHoje(true); }, 5*60*1000);
+
+// Alertas em tempo real: recalcula o ritmo do dia a cada minuto
+setInterval(function(){ if(abaAtual==="hoje" && dadosHoje) buildHoje(); }, 60*1000);
+
+setInterval(function(){
+  var ag = new Date();
+  var rel = document.getElementById("relogio");
+  if(rel) rel.textContent = pad2(ag.getHours())+":"+pad2(ag.getMinutes())+":"+pad2(ag.getSeconds());
+  var s = Math.round((proxAtt-Date.now())/1000);
+  if(s<0) return;
+  var m = Math.floor(s/60), ss = s%60;
+  var el = document.getElementById("countdown");
+  if(el) el.textContent = m+":"+(ss<10?"0":"")+ss;
 }, 1000);
 
+document.getElementById("dataInicio").addEventListener("change", buscarDados);
+document.getElementById("dataFim").addEventListener("change", buscarDados);
+
 buscarDados();
+garantirHoje();
+garantirHist();
 </script>
 </body>
 </html>
