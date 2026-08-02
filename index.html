@@ -207,9 +207,33 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .btn-save-metas { width: 100%; padding: 14px; background: var(--gold); border: none; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--bg); font-family: inherit; cursor: pointer; margin-top: 4px; }
 .meta-dia-hint { font-size: 11px; color: var(--text3); margin-top: 10px; line-height: 1.6; background: var(--card2); border-radius: 8px; padding: 10px 12px; }
 .meta-dia-hint b { color: var(--gold2); }
-.meta-total-row { display: flex; justify-content: space-between; align-items: center; background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin-bottom: 12px; }
-.meta-total-lbl { font-size: 11px; font-weight: 700; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; }
-.meta-total-val { font-size: 22px; font-weight: 900; color: var(--gold); letter-spacing: -0.5px; }
+/* METAS · seção por loja com os 3 níveis */
+.mt-loja { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+.mt-loja-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 11px; gap: 10px; flex-wrap: wrap; }
+.mt-loja-nome { font-size: 12px; font-weight: 700; color: var(--gold2); letter-spacing: 0.2px; }
+.mt-loja-fat { font-size: 11px; color: var(--text3); }
+.mt-inputs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+@media (max-width: 560px) { .mt-inputs { grid-template-columns: 1fr; } }
+.mt-campo .f-label { margin-bottom: 4px; }
+.mt-input-wrap { display: flex; align-items: center; gap: 6px; background: var(--card); border: 1px solid var(--border2); border-radius: 8px; padding: 0 10px; transition: border-color 0.2s; }
+.mt-input-wrap:focus-within { border-color: var(--gold); }
+.mt-prefix { font-size: 11px; font-weight: 600; color: var(--text3); flex-shrink: 0; }
+.mt-input { flex: 1; min-width: 0; background: transparent; border: none; padding: 9px 0; color: var(--text); font-size: 14px; font-weight: 700; font-family: inherit; }
+.mt-input:focus { outline: none; }
+.mt-status { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.mt-falta { font-size: 11px; color: var(--text3); }
+.mt-falta b { color: var(--gold2); }
+.mt-vazio { font-size: 11px; color: var(--text3); margin-top: 11px; font-style: italic; }
+.mt-aviso { font-size: 10.5px; color: var(--gold2); background: rgba(240,180,41,0.08); border-radius: 7px; padding: 7px 10px; margin-top: 11px; line-height: 1.45; }
+.mt-resumo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
+@media (max-width: 560px) { .mt-resumo { grid-template-columns: 1fr; } }
+.mt-resumo-item { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+.mt-resumo-item.batido { border-color: rgba(6,214,160,0.3); background: rgba(6,214,160,0.05); }
+.mt-resumo-lbl { font-size: 9.5px; font-weight: 700; color: var(--text3); letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 5px; }
+.mt-resumo-val { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.mt-resumo-item.batido .mt-resumo-val { color: var(--cyan); }
+.mt-resumo-pct { font-size: 10.5px; color: var(--text3); margin-top: 2px; }
+
 
 /* META BADGE no card do vendedor */
 .meta-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-top: 4px; }
@@ -217,6 +241,22 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .meta-badge.warn { background: rgba(240,180,41,0.12); color: var(--gold); }
 .meta-badge.danger { background: rgba(239,71,111,0.12); color: var(--red); }
 .meta-badge.neutro { background: rgba(255,255,255,0.06); color: var(--text3); }
+/* níveis: abaixo / meta / super / ouro */
+.meta-badge.abaixo { background: rgba(239,71,111,0.12); color: var(--red); }
+.meta-badge.meta   { background: rgba(240,180,41,0.12); color: var(--gold); }
+.meta-badge.super  { background: rgba(6,214,160,0.12); color: var(--cyan); }
+.meta-badge.ouro   { background: linear-gradient(90deg, rgba(240,180,41,0.22), rgba(255,209,102,0.10)); color: var(--gold2); box-shadow: inset 0 0 0 1px rgba(240,180,41,0.35); }
+
+/* BARRA COM MARCADORES DE NÍVEL */
+.nv-bar-wrap { position: relative; height: 8px; background: var(--border2); border-radius: 4px; overflow: hidden; margin-top: 7px; }
+.nv-bar-fill { position: absolute; top: 0; left: 0; height: 100%; border-radius: 4px; transition: width 0.7s ease; background: var(--red); }
+.nv-bar-fill.meta  { background: var(--gold); }
+.nv-bar-fill.super { background: var(--cyan); }
+.nv-bar-fill.ouro  { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+.nv-marca { position: absolute; top: 0; width: 2px; height: 100%; background: var(--bg); opacity: 0.85; }
+.nv-marca.batido { background: rgba(255,255,255,0.55); }
+.nv-legenda { display: flex; justify-content: space-between; gap: 6px; margin-top: 5px; font-size: 9.5px; color: var(--text3); flex-wrap: wrap; }
+.nv-legenda span.batido { color: var(--gold2); font-weight: 700; }
 
 /* ── HOJE ── */
 .hoje-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
@@ -517,24 +557,69 @@ const CO_BASE = {
 };
 function eixoReais(){ return { ticks:{color:"#55545c",font:{size:10},callback:function(v){return "R$"+Rk(v);}}, grid:{color:"rgba(255,255,255,0.05)"} }; }
 
-/* ══ METAS (localStorage, independentes por loja) ═══════════════════ */
-const LS_METAS = "nys_metas_v2";
+/* ══ METAS ══════════════════════════════════════════════════════════
+   3 níveis por vendedor por loja, em localStorage:
+   { "Giovana": { "203654110": { meta, superMeta, ouro }, ... }, ... }
+   A meta-base ("meta") é a que alimenta a distribuição diária e as
+   projeções; superMeta e ouro são degraus de reconhecimento por cima. */
+const LS_METAS = "nys_metas_v3";
+const NIVEIS = [
+  { chave: "meta",      rotulo: "Meta",       curto: "Meta",  emoji: "🟡", cor: "var(--gold)" },
+  { chave: "superMeta", rotulo: "Super Meta", curto: "Super", emoji: "🟢", cor: "var(--cyan)" },
+  { chave: "ouro",      rotulo: "Meta Ouro",  curto: "Ouro",  emoji: "🏆", cor: "var(--gold2)" }
+];
 let metas = {};
 let legadoMigrado = false;
-IDS_LOJAS.forEach(function(id){ metas[id] = {}; });
+
+function metasVazias(){
+  var o = {};
+  IDS_LOJAS.forEach(function(id){ o[id] = { meta: 0, superMeta: 0, ouro: 0 }; });
+  return o;
+}
+function normalizarNiveis(bruto){
+  var o = { meta: 0, superMeta: 0, ouro: 0 };
+  if(bruto == null) return o;
+  if(typeof bruto === "number") { o.meta = bruto; return o; }   // formato antigo: só um número
+  NIVEIS.forEach(function(n){ o[n.chave] = Number(bruto[n.chave]) || 0; });
+  return o;
+}
 
 (function carregarMetas(){
+  NOMES_V.forEach(function(nome){ metas[nome] = metasVazias(); });
   try {
-    var raw = JSON.parse(localStorage.getItem(LS_METAS) || "null");
-    if(raw){
-      IDS_LOJAS.forEach(function(id){ metas[id] = Object.assign({}, raw[id] || {}); });
+    var v3 = JSON.parse(localStorage.getItem(LS_METAS) || "null");
+    if(v3){
+      NOMES_V.forEach(function(nome){
+        IDS_LOJAS.forEach(function(id){
+          metas[nome][id] = normalizarNiveis((v3[nome] || {})[id]);
+        });
+      });
       return;
     }
-    // Migração do formato antigo (uma meta única por vendedor, sem loja)
-    var antigo = JSON.parse(localStorage.getItem("metas_fat") || "{}");
-    if(Object.keys(antigo).length){
-      metas[IDS_LOJAS[0]] = Object.assign({}, antigo);
-      legadoMigrado = true;
+    // v2: { lojaId: { vendedor: valor } } → vira a meta-base de cada loja
+    var v2 = JSON.parse(localStorage.getItem("nys_metas_v2") || "null");
+    if(v2){
+      var achou = false;
+      IDS_LOJAS.forEach(function(id){
+        Object.keys(v2[id] || {}).forEach(function(nome){
+          if(!metas[nome]) return;                       // vendedor que saiu do time
+          var val = Number(v2[id][nome]) || 0;
+          if(val > 0){ metas[nome][id].meta = val; achou = true; }
+        });
+      });
+      if(achou) legadoMigrado = true;
+      return;
+    }
+    // metas_fat: { vendedor: valor }, sem loja → cai na primeira loja
+    var v1 = JSON.parse(localStorage.getItem("metas_fat") || "null");
+    if(v1){
+      var achou1 = false;
+      Object.keys(v1).forEach(function(nome){
+        if(!metas[nome]) return;
+        var val = Number(v1[nome]) || 0;
+        if(val > 0){ metas[nome][IDS_LOJAS[0]].meta = val; achou1 = true; }
+      });
+      if(achou1) legadoMigrado = true;
     }
   } catch(e){}
 })();
@@ -542,12 +627,82 @@ IDS_LOJAS.forEach(function(id){ metas[id] = {}; });
 function persistirMetas(){
   try { localStorage.setItem(LS_METAS, JSON.stringify(metas)); } catch(e){ toast("Não foi possível salvar no navegador","err"); }
 }
-function metaV(nome, lojaId){
-  if(lojaId==="todas") return IDS_LOJAS.reduce(function(s,id){ return s+(Number(metas[id][nome])||0); },0);
-  return Number((metas[lojaId]||{})[nome]) || 0;
+
+// Valor de um nível. Com "todas", soma as duas lojas naquele mesmo nível.
+function metaNivel(nome, lojaId, nivel){
+  if(lojaId==="todas") return IDS_LOJAS.reduce(function(s,id){ return s+metaNivel(nome,id,nivel); },0);
+  var reg = (metas[nome]||{})[lojaId];
+  return reg ? (Number(reg[nivel]) || 0) : 0;
 }
+// Meta-base: é ela que a distribuição diária e as projeções usam.
+function metaV(nome, lojaId){ return metaNivel(nome, lojaId, "meta"); }
 function metaLoja(lojaId){
   return NOMES_V.reduce(function(s,n){ return s+metaV(n,lojaId); },0);
+}
+
+// Nível efetivamente alcançado. Avalia do mais alto para o mais baixo e
+// ignora níveis não preenchidos, então funciona mesmo com valores fora de ordem.
+function nivelAtingido(nome, lojaId, fat){
+  var definidos = NIVEIS.map(function(n){ return { nivel: n, valor: metaNivel(nome,lojaId,n.chave) }; })
+                        .filter(function(x){ return x.valor > 0; });
+  if(!definidos.length) return null;
+  var ordenados = definidos.slice().sort(function(a,b){ return b.valor-a.valor; });
+  for(var i=0;i<ordenados.length;i++){
+    if(fat >= ordenados[i].valor) return ordenados[i].nivel.chave;
+  }
+  return "abaixo";
+}
+function rotuloNivel(chave){
+  if(chave==="ouro")      return "🏆 Meta Ouro atingida";
+  if(chave==="superMeta") return "🟢 Super Meta atingida";
+  if(chave==="meta")      return "🟡 Meta atingida";
+  return "🔴 Abaixo da Meta";
+}
+function classeNivel(chave){
+  if(chave==="ouro")      return "ouro";
+  if(chave==="superMeta") return "super";
+  if(chave==="meta")      return "meta";
+  return "abaixo";
+}
+// Níveis preenchidos, em ordem crescente — base da barra de progresso.
+function niveisDefinidos(nome, lojaId){
+  return NIVEIS.map(function(n){ return { chave: n.chave, rotulo: n.rotulo, curto: n.curto, emoji: n.emoji, valor: metaNivel(nome,lojaId,n.chave) }; })
+               .filter(function(x){ return x.valor > 0; })
+               .sort(function(a,b){ return a.valor-b.valor; });
+}
+// true quando os níveis preenchidos não estão em ordem crescente
+function niveisForaDeOrdem(nome, lojaId){
+  var vals = NIVEIS.map(function(n){ return metaNivel(nome,lojaId,n.chave); });
+  var ant = 0;
+  for(var i=0;i<vals.length;i++){
+    if(vals[i] <= 0) continue;
+    if(vals[i] <= ant) return true;
+    ant = vals[i];
+  }
+  return false;
+}
+
+// Barra com marcadores nos pontos de meta / super / ouro
+function barraNiveisHTML(nome, lojaId, fat){
+  var defs = niveisDefinidos(nome, lojaId);
+  if(!defs.length) return "";
+  var teto = defs[defs.length-1].valor;
+  var atingido = nivelAtingido(nome, lojaId, fat);
+  var largura = Math.min(100, teto>0 ? fat/teto*100 : 0);
+  var h = '<div class="nv-bar-wrap" title="R$ '+R(fat)+' de R$ '+R(teto)+' (teto: '+defs[defs.length-1].rotulo+')">';
+  h += '<div class="nv-bar-fill '+classeNivel(atingido)+'" style="width:'+largura.toFixed(1)+'%"></div>';
+  defs.forEach(function(d){
+    var pos = teto>0 ? Math.min(100, d.valor/teto*100) : 0;
+    var ok = fat >= d.valor;
+    h += '<div class="nv-marca'+(ok?" batido":"")+'" style="left:'+pos.toFixed(1)+'%" title="'+d.rotulo+': R$ '+R(d.valor)+'"></div>';
+  });
+  h += '</div>';
+  h += '<div class="nv-legenda">';
+  defs.forEach(function(d){
+    h += '<span class="'+(fat>=d.valor?"batido":"")+'">'+d.emoji+' '+d.curto+' R$ '+Rk(d.valor)+'</span>';
+  });
+  h += '</div>';
+  return h;
 }
 function lojasAtivas(){ return lojaSel==="todas" ? IDS_LOJAS : [lojaSel]; }
 function nomeLoja(lojaId){ return lojaId==="todas" ? "Todas as lojas" : (LOJAS[lojaId] ? LOJAS[lojaId].nome : lojaId); }
@@ -561,15 +716,6 @@ function statusPct(pct){
   if(pct>=100) return "ok";
   if(pct>=70) return "warn";
   return "danger";
-}
-function metaStatus(fat, meta){
-  if(!meta || meta===0) return null;
-  return statusPct(fat/meta*100);
-}
-function metaEmoji(status){
-  if(status==="ok") return "✓ Meta atingida";
-  if(status==="warn") return "⚡ Em evolução";
-  return "⚠ Abaixo da meta";
 }
 
 /* ══ CALENDÁRIO COMERCIAL (espelha o backend, mas olha para o futuro) ══ */
@@ -1027,20 +1173,18 @@ function buildDashboard(){
     var pct = fatTotal>0 ? v.faturamento/fatTotal*100 : 0;
     var pa = v.pedidos>0 ? (v.pecas/v.pedidos).toFixed(1) : "—";
     var meta = metaV(v.nome, lojaSel);
-    var status = metaStatus(v.faturamento, meta);
+    var defs = niveisDefinidos(v.nome, lojaSel);
+    var atingido = nivelAtingido(v.nome, lojaSel, v.faturamento);
     var metaPct = meta>0 ? Math.min(100,(v.faturamento/meta*100)).toFixed(0) : null;
     h += '<div class="v-item '+(selVendedor===v.nome?"active":"")+'" onclick="selV(\''+v.nome+'\')">';
     h += '<div class="v-top">';
     h += '<div class="v-info"><div class="v-rank">'+medals[i]+'</div>'+avatar(v.nome,"sm")+'<div><div class="v-name">'+v.nome+'</div><div class="v-tags">'+v.pedidos+' ped · PA '+pa+'</div>';
-    if(status) h += '<div class="meta-badge '+status+'">'+metaEmoji(status)+' · '+metaPct+'%</div>';
+    if(atingido) h += '<div class="meta-badge '+classeNivel(atingido)+'">'+rotuloNivel(atingido)+(metaPct?' · '+metaPct+'%':'')+'</div>';
     h += '</div></div>';
     h += '<div><div class="v-fat">R$'+R(v.faturamento)+'</div><div class="v-tm">TM R$'+R(v.ticketMedio)+'</div></div>';
     h += '</div>';
-    if(meta>0){
-      var barPct = Math.min(100,(v.faturamento/meta*100)).toFixed(1);
-      h += '<div class="meta-bar" style="margin-bottom:6px"><div class="meta-bar-fill '+status+'" style="width:'+barPct+'%"></div></div>';
-    }
-    h += '<div class="v-bar"><div class="v-bar-fill" style="width:'+pct.toFixed(1)+'%"></div></div>';
+    if(defs.length) h += barraNiveisHTML(v.nome, lojaSel, v.faturamento);
+    h += '<div class="v-bar" style="margin-top:7px"><div class="v-bar-fill" style="width:'+pct.toFixed(1)+'%"></div></div>';
     h += '</div>';
   });
   if(ger) h += '<div class="v-gerentes"><span>👔 Gerentes</span><span>R$ '+R(ger.faturamento)+' · '+ger.pedidos+' ped</span></div>';
@@ -1690,41 +1834,69 @@ function salvar(){
 }
 
 /* ══ ABA: 🎯 METAS ═════════════════════════════════════════════════ */
-let metaLojaAtiva = IDS_LOJAS[0];
+// id do input de um nível: meta-<vendedor>-<loja>-<nivel>
+function idInput(nome, lojaId, nivel){
+  return "meta-" + nome.replace(/\s+/g,"_") + "-" + lojaId + "-" + nivel;
+}
 
 function buildMetas(){
   var el = document.getElementById("tab-metas");
-  if(lojaSel!=="todas") metaLojaAtiva = lojaSel;
-  var lojaId = metaLojaAtiva;
   var base = dadosMes || dados;
 
-  var h = '<div class="info-note">🎯 Defina a <b>meta mensal de faturamento</b> de cada vendedor, por loja. O sistema distribui essa meta entre os dias do mês usando o peso real de cada dia da semana aprendido do Bling e o impacto das datas comemorativas.</div>';
-  if(legadoMigrado) h += '<div class="info-note cyan">ℹ️ Encontramos metas salvas no formato antigo (sem loja) e as trouxemos para <b>'+LOJAS[IDS_LOJAS[0]].nome+'</b>. Confira e ajuste a outra loja se precisar.</div>';
-  if(!hist && !histErro) h += '<div class="info-note">⏳ Ainda aprendendo o histórico. A prévia da meta diária abaixo usa divisão simples até terminar.</div>';
-
-  h += '<div class="pill-group">'+IDS_LOJAS.map(function(id){
-    return '<button class="pill'+(id===lojaId?" active":"")+'" onclick="setMetaLoja(\''+id+'\')">'+LOJAS[id].emoji+' '+LOJAS[id].nome+'</button>';
-  }).join("")+'</div>';
-
-  h += '<div class="meta-total-row"><div><div class="meta-total-lbl">Meta total · '+LOJAS[lojaId].nome+'</div>'+
-       '<div style="font-size:11px;color:var(--text3);margin-top:3px">'+LOJAS[lojaId].obs+' · '+diasAbertosNoMes(lojaId)+' dias de loja em '+MESES[new Date().getMonth()]+'</div></div>'+
-       '<div class="meta-total-val" id="meta-total">R$ '+R(metaLoja(lojaId))+'</div></div>';
+  var h = '<div class="info-note">🎯 Cada vendedor tem <b>3 níveis por loja</b>: Meta, Super Meta e Meta Ouro. A <b>Meta</b> é a que o sistema distribui entre os dias do mês (pelo peso de cada dia da semana aprendido do Bling); Super e Ouro são degraus de reconhecimento em cima dela.</div>';
+  if(legadoMigrado) h += '<div class="info-note cyan">ℹ️ Encontramos metas salvas em formato antigo e as trouxemos para o campo <b>Meta</b> de cada loja. Confira os valores e preencha Super Meta e Meta Ouro.</div>';
+  if(!hist && !histErro) h += '<div class="info-note">⏳ Ainda aprendendo o histórico. A prévia da meta diária usa divisão simples até terminar.</div>';
 
   NOMES_V.forEach(function(nome){
-    var fat = fatV(base, nome, lojaId);
-    var meta = metaV(nome, lojaId);
-    var status = metaStatus(fat, meta);
-    var pct = meta>0 ? Math.min(100,(fat/meta*100)) : 0;
+    var fatTodas = fatV(base, nome, "todas");
     h += '<div class="meta-card">';
-    h += '<div class="meta-vendedor">'+avatar(nome)+'<div><div class="meta-nome">'+nome+'</div>'+
-         '<div class="meta-atual">Faturamento no mês: <b style="color:var(--gold)">R$ '+R(fat)+'</b></div></div></div>';
-    h += '<div class="meta-input-row"><span class="meta-prefix">R$</span><input type="number" class="meta-input" id="meta-'+nome+'" value="'+(meta||"")+'" placeholder="0,00" min="0" step="100" oninput="previewMeta(\''+nome+'\')"></div>';
-    h += '<div id="meta-preview-'+nome+'">'+previewMetaHTML(nome, lojaId, meta, fat, status, pct)+'</div>';
+    h += '<div class="meta-vendedor">'+avatar(nome,"lg")+'<div><div class="meta-nome">'+nome+'</div>'+
+         '<div class="meta-atual">Faturamento no mês (as duas lojas): <b style="color:var(--gold)">R$ '+R(fatTodas)+'</b></div></div></div>';
+
+    IDS_LOJAS.forEach(function(lojaId){
+      var fat = fatV(base, nome, lojaId);
+      h += '<div class="mt-loja">';
+      h += '<div class="mt-loja-head"><span class="mt-loja-nome">'+LOJAS[lojaId].emoji+' '+LOJAS[lojaId].nome+'</span>'+
+           '<span class="mt-loja-fat">R$ '+R(fat)+' no mês</span></div>';
+      h += '<div class="mt-inputs">';
+      NIVEIS.forEach(function(n){
+        var val = metaNivel(nome, lojaId, n.chave);
+        var id = idInput(nome, lojaId, n.chave);
+        h += '<div class="mt-campo"><label class="f-label" for="'+id+'">'+n.emoji+' '+n.rotulo+'</label>'+
+             '<div class="mt-input-wrap"><span class="mt-prefix">R$</span>'+
+             '<input type="number" class="mt-input" id="'+id+'" value="'+(val||"")+'" placeholder="0" min="0" step="100" '+
+             'oninput="previewMeta(\''+nome+'\')"></div></div>';
+      });
+      h += '</div>';
+      h += '<div id="mt-status-'+nome.replace(/\s+/g,"_")+'-'+lojaId+'">'+statusLojaHTML(nome, lojaId, fat)+'</div>';
+      h += '</div>';
+    });
+
+    h += '<div id="meta-preview-'+nome.replace(/\s+/g,"_")+'">'+previewMetaHTML(nome, base)+'</div>';
+    h += '<button class="btn-save-metas" onclick="salvarMetasDe(\''+nome+'\')">Salvar metas de '+nome+'</button>';
     h += '</div>';
   });
 
-  h += '<button class="btn-save-metas" onclick="salvarMetas()">Salvar Metas de '+LOJAS[lojaId].nome+'</button>';
+  h += '<button class="btn-save-metas" style="margin-top:6px" onclick="salvarMetas()">💾 Salvar todas as metas</button>';
   el.innerHTML = h;
+}
+
+// Linha de situação de um vendedor numa loja: nível atingido + barra
+function statusLojaHTML(nome, lojaId, fat){
+  var defs = niveisDefinidos(nome, lojaId);
+  if(!defs.length) return '<div class="mt-vazio">Nenhum nível definido para esta loja.</div>';
+  var h = "";
+  if(niveisForaDeOrdem(nome, lojaId)){
+    h += '<div class="mt-aviso">⚠️ Os valores não estão em ordem crescente (Meta &lt; Super Meta &lt; Meta Ouro). O nível atingido é calculado pelo maior valor já batido.</div>';
+  }
+  var atingido = nivelAtingido(nome, lojaId, fat);
+  var proximo = defs.find(function(d){ return fat < d.valor; });
+  h += '<div class="mt-status"><span class="meta-badge '+classeNivel(atingido)+'">'+rotuloNivel(atingido)+'</span>';
+  if(proximo) h += '<span class="mt-falta">faltam <b>R$ '+R(proximo.valor-fat)+'</b> para '+proximo.rotulo+'</span>';
+  else h += '<span class="mt-falta">todos os níveis batidos 🎉</span>';
+  h += '</div>';
+  h += barraNiveisHTML(nome, lojaId, fat);
+  return h;
 }
 
 function diasAbertosNoMes(lojaId){
@@ -1735,35 +1907,40 @@ function diasAbertosNoMes(lojaId){
   return c;
 }
 
-function previewMetaHTML(nome, lojaId, meta, fat, status, pct){
-  if(!meta || meta<=0) return '';
-  var resto = meta-fat;
-  var h = '<div class="meta-progress">';
-  h += '<div class="meta-progress-top"><div class="meta-pct '+(status||"warn")+'">'+pct.toFixed(0)+'%</div>'+
-       '<div class="meta-resto">'+(resto>0?'Faltam R$ '+R(resto):'Meta atingida! 🎉')+'</div></div>';
-  h += '<div class="meta-bar"><div class="meta-bar-fill '+(status||"warn")+'" style="width:'+pct.toFixed(1)+'%"></div></div>';
+// Resumo do vendedor somando as duas lojas + como a Meta vira meta diária
+function previewMetaHTML(nome, base){
+  var metaTotal = metaV(nome, "todas");
+  if(metaTotal <= 0) return '';
+  var fatTodas = fatV(base, nome, "todas");
+
+  var h = '<div class="mt-resumo">';
+  NIVEIS.forEach(function(n){
+    var val = metaNivel(nome, "todas", n.chave);
+    if(val <= 0) return;
+    var batido = fatTodas >= val;
+    h += '<div class="mt-resumo-item'+(batido?" batido":"")+'"><div class="mt-resumo-lbl">'+n.emoji+' '+n.rotulo+' (2 lojas)</div>'+
+         '<div class="mt-resumo-val">R$ '+R(val)+'</div>'+
+         '<div class="mt-resumo-pct">'+Math.round(fatTodas/val*100)+'%</div></div>';
+  });
   h += '</div>';
 
-  // Prévia inteligente: como essa meta se traduz em dias
-  var metaHojeV = meta * fracaoDiaPara(lojaId, hoje);
-  var pesos = pesosDS(lojaId);
+  // Como a Meta-base se traduz em dias
+  var metaHojeV = 0;
+  IDS_LOJAS.forEach(function(id){ metaHojeV += metaNivel(nome,id,"meta") * fracaoDiaPara(id, hoje); });
+  var diasLoja = Math.max(1, Math.max(diasAbertosNoMes(IDS_LOJAS[0]), diasAbertosNoMes(IDS_LOJAS[1])));
+  var mediaDia = metaTotal/diasLoja;
+  var pesos = pesosDS(lojaSel==="todas" ? IDS_LOJAS[0] : lojaSel);
   var melhorD = -1, maiorP = 0, piorD = -1, menorP = Infinity;
   for(var i=0;i<7;i++){
     if(pesos.pesos[i]<=0) continue;
     if(pesos.pesos[i]>maiorP){ maiorP=pesos.pesos[i]; melhorD=i; }
     if(pesos.pesos[i]<menorP){ menorP=pesos.pesos[i]; piorD=i; }
   }
-  var dist = distMes(lojaId, new Date().getFullYear(), new Date().getMonth());
-  var mediaDia = meta/Math.max(1,diasAbertosNoMes(lojaId));
-  var maxFrac = 0, diaMax = null;
-  Object.keys(dist.porDia).forEach(function(k){ if(dist.porDia[k]>maxFrac){ maxFrac=dist.porDia[k]; diaMax=k; } });
-
   h += '<div class="meta-dia-hint">';
   h += '📅 Meta de <b>hoje</b> ('+DIAS[dow(hoje)]+'): <b>R$ '+R(metaHojeV)+'</b> · média simples seria R$ '+R(mediaDia)+'<br>';
   if(pesos.aprendido && melhorD>=0 && piorD>=0 && melhorD!==piorD){
-    h += '📈 Aprendido do Bling: <b>'+DIAS[melhorD]+'</b> puxa o mês pra cima, <b>'+DIAS[piorD]+'</b> é o mais fraco.<br>';
+    h += '📈 Aprendido do Bling: <b>'+DIAS[melhorD]+'</b> puxa o mês pra cima, <b>'+DIAS[piorD]+'</b> é o mais fraco.';
   }
-  if(diaMax) h += '🔥 Dia de maior meta no mês: <b>'+fmtDM(diaMax)+'</b> ('+DIAS_C[dow(diaMax)]+') com R$ '+R(meta*maxFrac)+'.';
   h += '</div>';
   return h;
 }
@@ -1775,39 +1952,50 @@ function fracaoDiaPara(lojaId, dataStr){
   return dist.porDia[dataStr] || 0;
 }
 
-function setMetaLoja(id){ metaLojaAtiva = id; buildMetas(); }
-
-function previewMeta(nome){
-  var lojaId = metaLojaAtiva;
-  var input = document.getElementById("meta-"+nome);
-  var meta = Number(input.value) || 0;
-  var base = dadosMes || dados;
-  var fat = fatV(base, nome, lojaId);
-  var prev = document.getElementById("meta-preview-"+nome);
-  if(prev){
-    var pct = meta>0 ? Math.min(100, fat/meta*100) : 0;
-    prev.innerHTML = previewMetaHTML(nome, lojaId, meta, fat, metaStatus(fat,meta), pct);
-  }
-  // total ao vivo
-  var soma = 0;
-  NOMES_V.forEach(function(n){
-    var i = document.getElementById("meta-"+n);
-    soma += i ? (Number(i.value)||0) : metaV(n,lojaId);
+// Lê os inputs de um vendedor para dentro de `metas` (sem persistir ainda)
+function coletarInputs(nome){
+  var mudou = false;
+  IDS_LOJAS.forEach(function(lojaId){
+    NIVEIS.forEach(function(n){
+      var input = document.getElementById(idInput(nome, lojaId, n.chave));
+      if(!input) return;
+      var val = Math.max(0, Number(input.value) || 0);
+      if(!metas[nome]) metas[nome] = metasVazias();
+      if(metas[nome][lojaId][n.chave] !== val){ metas[nome][lojaId][n.chave] = val; mudou = true; }
+    });
   });
-  var tot = document.getElementById("meta-total");
-  if(tot) tot.textContent = "R$ "+R(soma);
+  return mudou;
 }
 
-function salvarMetas(){
-  var lojaId = metaLojaAtiva;
-  NOMES_V.forEach(function(nome){
-    var input = document.getElementById("meta-"+nome);
-    if(input) metas[lojaId][nome] = Number(input.value) || 0;
+// Atualiza a prévia enquanto digita, sem persistir
+function previewMeta(nome){
+  coletarInputs(nome);
+  invalidarDist();
+  var base = dadosMes || dados;
+  var slug = nome.replace(/\s+/g,"_");
+  IDS_LOJAS.forEach(function(lojaId){
+    var alvo = document.getElementById("mt-status-"+slug+"-"+lojaId);
+    if(alvo) alvo.innerHTML = statusLojaHTML(nome, lojaId, fatV(base, nome, lojaId));
   });
+  var prev = document.getElementById("meta-preview-"+slug);
+  if(prev) prev.innerHTML = previewMetaHTML(nome, base);
+}
+
+function salvarMetasDe(nome){
+  coletarInputs(nome);
   persistirMetas();
   legadoMigrado = false;
   invalidarDist();
-  toast("✓ Metas de "+LOJAS[lojaId].nome+" salvas!");
+  toast("✓ Metas de "+nome+" salvas!");
+  buildMetas();
+}
+
+function salvarMetas(){
+  NOMES_V.forEach(coletarInputs);
+  persistirMetas();
+  legadoMigrado = false;
+  invalidarDist();
+  toast("✓ Metas de todos os vendedores salvas!");
   buildMetas();
 }
 
