@@ -233,6 +233,26 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .btn-save-metas { width: 100%; padding: 14px; background: var(--gold); border: none; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--bg); font-family: inherit; cursor: pointer; margin-top: 4px; }
 .meta-dia-hint { font-size: 11px; color: var(--text3); margin-top: 10px; line-height: 1.6; background: var(--card2); border-radius: 8px; padding: 10px 12px; }
 .meta-dia-hint b { color: var(--gold2); }
+/* DASHBOARD · progresso das lojas */
+.lojas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+@media (max-width: 700px) { .lojas-grid { grid-template-columns: 1fr; } }
+.lj-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; transition: border-color 0.2s; }
+.lj-card.meta  { border-color: rgba(240,180,41,0.32); }
+.lj-card.super { border-color: rgba(6,214,160,0.32); }
+.lj-card.ouro  { border-color: rgba(240,180,41,0.5); background: linear-gradient(135deg, rgba(240,180,41,0.07), transparent 60%); }
+.lj-card.abaixo { border-color: rgba(239,71,111,0.28); }
+.lj-top { display: flex; align-items: center; gap: 12px; margin-bottom: 11px; }
+.lj-icone { width: 38px; height: 38px; border-radius: 10px; background: var(--card2); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.lj-id { flex: 1; min-width: 0; }
+.lj-nome { font-size: 14px; font-weight: 700; color: var(--text); }
+.lj-sub { font-size: 10.5px; color: var(--text3); margin-top: 2px; }
+.lj-num { text-align: right; flex-shrink: 0; }
+.lj-fat { font-size: 19px; font-weight: 800; color: var(--gold); letter-spacing: -0.5px; line-height: 1; }
+.lj-pct { font-size: 10.5px; color: var(--text3); margin-top: 3px; }
+.lj-badge-linha { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 2px; }
+.lj-falta { font-size: 10.5px; color: var(--text3); }
+.mt-loja-icone { width: 44px; height: 44px; border-radius: 12px; background: var(--card2); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+
 /* METAS · indicador de sincronização */
 .sync { font-size: 11.5px; border-radius: 8px; padding: 10px 13px; margin-bottom: 12px; line-height: 1.5; display: flex; align-items: center; gap: 8px; }
 .sync b { font-weight: 700; }
@@ -605,53 +625,72 @@ const CO_BASE = {
 function eixoReais(){ return { ticks:{color:"#55545c",font:{size:10},callback:function(v){return "R$"+Rk(v);}}, grid:{color:"rgba(255,255,255,0.05)"} }; }
 
 /* ══ METAS ══════════════════════════════════════════════════════════
-   3 níveis por vendedor por loja, em localStorage:
-   { "Giovana": { "203654110": { meta, superMeta, ouro }, ... }, ... }
+   Estrutura única, compartilhada com o backend e espelhada em localStorage:
+   { lojas:      { "203654110": { meta, superMeta, ouro }, ... },
+     vendedores: { "Giovana": { "203654110": { meta, superMeta, ouro }, ... } } }
    A meta-base ("meta") é a que alimenta a distribuição diária e as
    projeções; superMeta e ouro são degraus de reconhecimento por cima. */
-const LS_METAS = "nys_metas_v3";
+const LS_METAS = "nys_metas_v4";
 const NIVEIS = [
   { chave: "meta",      rotulo: "Meta",       curto: "Meta",  emoji: "🟡", cor: "var(--gold)" },
   { chave: "superMeta", rotulo: "Super Meta", curto: "Super", emoji: "🟢", cor: "var(--cyan)" },
   { chave: "ouro",      rotulo: "Meta Ouro",  curto: "Ouro",  emoji: "🏆", cor: "var(--gold2)" }
 ];
-let metas = {};
+let metas = { lojas: {}, vendedores: {} };
 let legadoMigrado = false;
 
+function niveisZerados(){ return { meta: 0, superMeta: 0, ouro: 0 }; }
 function metasVazias(){
-  var o = {};
-  IDS_LOJAS.forEach(function(id){ o[id] = { meta: 0, superMeta: 0, ouro: 0 }; });
+  var o = { lojas: {}, vendedores: {} };
+  IDS_LOJAS.forEach(function(id){ o.lojas[id] = niveisZerados(); });
+  NOMES_V.forEach(function(nome){
+    o.vendedores[nome] = {};
+    IDS_LOJAS.forEach(function(id){ o.vendedores[nome][id] = niveisZerados(); });
+  });
   return o;
 }
 function normalizarNiveis(bruto){
-  var o = { meta: 0, superMeta: 0, ouro: 0 };
+  var o = niveisZerados();
   if(bruto == null) return o;
   if(typeof bruto === "number") { o.meta = bruto; return o; }   // formato antigo: só um número
   NIVEIS.forEach(function(n){ o[n.chave] = Number(bruto[n.chave]) || 0; });
   return o;
 }
+// Aceita o envelope novo e também o formato v3 (vendedores na raiz)
+function adotarMetas(bruto){
+  var novo = metasVazias();
+  if(!bruto || typeof bruto !== "object") return novo;
+  var temEnvelope = ("lojas" in bruto) || ("vendedores" in bruto);
+  var porVendedor = temEnvelope ? (bruto.vendedores || {}) : bruto;
+  var porLoja = temEnvelope ? (bruto.lojas || {}) : {};
+  IDS_LOJAS.forEach(function(id){ novo.lojas[id] = normalizarNiveis(porLoja[id]); });
+  NOMES_V.forEach(function(nome){
+    IDS_LOJAS.forEach(function(id){
+      novo.vendedores[nome][id] = normalizarNiveis((porVendedor[nome] || {})[id]);
+    });
+  });
+  return novo;
+}
 
 (function carregarMetas(){
-  NOMES_V.forEach(function(nome){ metas[nome] = metasVazias(); });
+  metas = metasVazias();
   try {
-    var v3 = JSON.parse(localStorage.getItem(LS_METAS) || "null");
-    if(v3){
-      NOMES_V.forEach(function(nome){
-        IDS_LOJAS.forEach(function(id){
-          metas[nome][id] = normalizarNiveis((v3[nome] || {})[id]);
-        });
-      });
-      return;
-    }
+    var v4 = JSON.parse(localStorage.getItem(LS_METAS) || "null");
+    if(v4){ metas = adotarMetas(v4); return; }
+
+    // v3: { vendedor: { lojaId: níveis } } — sem metas de loja
+    var v3 = JSON.parse(localStorage.getItem("nys_metas_v3") || "null");
+    if(v3){ metas = adotarMetas(v3); legadoMigrado = true; return; }
+
     // v2: { lojaId: { vendedor: valor } } → vira a meta-base de cada loja
     var v2 = JSON.parse(localStorage.getItem("nys_metas_v2") || "null");
     if(v2){
       var achou = false;
       IDS_LOJAS.forEach(function(id){
         Object.keys(v2[id] || {}).forEach(function(nome){
-          if(!metas[nome]) return;                       // vendedor que saiu do time
+          if(!metas.vendedores[nome]) return;              // vendedor que saiu do time
           var val = Number(v2[id][nome]) || 0;
-          if(val > 0){ metas[nome][id].meta = val; achou = true; }
+          if(val > 0){ metas.vendedores[nome][id].meta = val; achou = true; }
         });
       });
       if(achou) legadoMigrado = true;
@@ -662,9 +701,9 @@ function normalizarNiveis(bruto){
     if(v1){
       var achou1 = false;
       Object.keys(v1).forEach(function(nome){
-        if(!metas[nome]) return;
+        if(!metas.vendedores[nome]) return;
         var val = Number(v1[nome]) || 0;
-        if(val > 0){ metas[nome][IDS_LOJAS[0]].meta = val; achou1 = true; }
+        if(val > 0){ metas.vendedores[nome][IDS_LOJAS[0]].meta = val; achou1 = true; }
       });
       if(achou1) legadoMigrado = true;
     }
@@ -689,11 +728,15 @@ let carregandoMetas = false;
 let enviandoMetas = false;
 
 function metasTemDadosLocal(){
-  return NOMES_V.some(function(nome){
+  var lojas = IDS_LOJAS.some(function(id){
+    return NIVEIS.some(function(n){ return metaLojaNivel(id,n.chave) > 0; });
+  });
+  var vend = NOMES_V.some(function(nome){
     return IDS_LOJAS.some(function(id){
       return NIVEIS.some(function(n){ return metaNivel(nome,id,n.chave) > 0; });
     });
   });
+  return lojas || vend;
 }
 
 async function garantirMetas(forcar){
@@ -715,11 +758,7 @@ async function garantirMetas(forcar){
       }
     } else {
       // Servidor é a fonte compartilhada: sobrescreve o que houver local.
-      NOMES_V.forEach(function(nome){
-        IDS_LOJAS.forEach(function(id){
-          metas[nome][id] = normalizarNiveis((j.metas[nome]||{})[id]);
-        });
-      });
+      metas = adotarMetas(j.metas);
       persistirMetas();
       legadoMigrado = false;
       metasOrigem = "backend"; metasSyncErro = null; metasSyncEm = j.atualizadoEm;
@@ -776,30 +815,97 @@ function fmtDataHora(iso){
   } catch(e){ return iso; }
 }
 
-// Valor de um nível. Com "todas", soma as duas lojas naquele mesmo nível.
-function metaNivel(nome, lojaId, nivel){
-  if(lojaId==="todas") return IDS_LOJAS.reduce(function(s,id){ return s+metaNivel(nome,id,nivel); },0);
-  var reg = (metas[nome]||{})[lojaId];
-  return reg ? (Number(reg[nivel]) || 0) : 0;
+function somarRegs(regs){
+  var o = niveisZerados();
+  regs.forEach(function(r){ NIVEIS.forEach(function(n){ o[n.chave] += Number((r||{})[n.chave]) || 0; }); });
+  return o;
 }
-// Meta-base: é ela que a distribuição diária e as projeções usam.
-function metaV(nome, lojaId){ return metaNivel(nome, lojaId, "meta"); }
-function metaLoja(lojaId){
-  return NOMES_V.reduce(function(s,n){ return s+metaV(n,lojaId); },0);
+// Acessores tolerantes: uma cópia truncada no localStorage não pode
+// derrubar o dashboard inteiro.
+function mapaVendedores(){ return (metas && metas.vendedores) || {}; }
+function mapaLojas(){ return (metas && metas.lojas) || {}; }
+
+// Registro de níveis de um vendedor numa loja ("todas" soma as duas)
+function regVendedor(nome, lojaId){
+  var doVend = mapaVendedores()[nome] || {};
+  if(lojaId==="todas") return somarRegs(IDS_LOJAS.map(function(id){ return doVend[id]; }));
+  return doVend[lojaId] || niveisZerados();
+}
+// Registro de níveis da própria loja ("todas" soma as duas)
+function regLoja(lojaId){
+  var m = mapaLojas();
+  if(lojaId==="todas") return somarRegs(IDS_LOJAS.map(function(id){ return m[id]; }));
+  return m[lojaId] || niveisZerados();
 }
 
+function metaNivel(nome, lojaId, nivel){ return Number(regVendedor(nome,lojaId)[nivel]) || 0; }
+function metaLojaNivel(lojaId, nivel){ return Number(regLoja(lojaId)[nivel]) || 0; }
+
+// Meta-base: é ela que a distribuição diária e as projeções usam.
+function metaV(nome, lojaId){ return metaNivel(nome, lojaId, "meta"); }
+
+// Soma das metas dos vendedores — o compromisso distribuído da equipe.
+function somaMetasVendedores(lojaId){
+  return NOMES_V.reduce(function(s,n){ return s+metaV(n,lojaId); },0);
+}
+// Meta-base da loja para efeito de distribuição diária e calendário: usa a
+// meta explícita da loja quando houver, senão cai na soma dos vendedores.
+function metaLoja(lojaId){
+  var explicita = metaLojaNivel(lojaId, "meta");
+  return explicita > 0 ? explicita : somaMetasVendedores(lojaId);
+}
+
+/* ── Níveis: lógica genérica sobre um registro { meta, superMeta, ouro },
+      usada tanto pelos vendedores quanto pelas lojas ── */
+
+// Níveis preenchidos, em ordem crescente
+function niveisDeReg(reg){
+  return NIVEIS.map(function(n){ return { chave:n.chave, rotulo:n.rotulo, curto:n.curto, emoji:n.emoji, valor:Number((reg||{})[n.chave])||0 }; })
+               .filter(function(x){ return x.valor > 0; })
+               .sort(function(a,b){ return a.valor-b.valor; });
+}
 // Nível efetivamente alcançado. Avalia do mais alto para o mais baixo e
 // ignora níveis não preenchidos, então funciona mesmo com valores fora de ordem.
-function nivelAtingido(nome, lojaId, fat){
-  var definidos = NIVEIS.map(function(n){ return { nivel: n, valor: metaNivel(nome,lojaId,n.chave) }; })
-                        .filter(function(x){ return x.valor > 0; });
-  if(!definidos.length) return null;
-  var ordenados = definidos.slice().sort(function(a,b){ return b.valor-a.valor; });
-  for(var i=0;i<ordenados.length;i++){
-    if(fat >= ordenados[i].valor) return ordenados[i].nivel.chave;
-  }
+function nivelDeReg(reg, fat){
+  var defs = niveisDeReg(reg);
+  if(!defs.length) return null;
+  var ord = defs.slice().sort(function(a,b){ return b.valor-a.valor; });
+  for(var i=0;i<ord.length;i++){ if(fat >= ord[i].valor) return ord[i].chave; }
   return "abaixo";
 }
+function foraDeOrdemReg(reg){
+  var ant = 0;
+  for(var i=0;i<NIVEIS.length;i++){
+    var v = Number((reg||{})[NIVEIS[i].chave]) || 0;
+    if(v <= 0) continue;
+    if(v <= ant) return true;
+    ant = v;
+  }
+  return false;
+}
+// Barra com marcadores nos pontos de meta / super / ouro
+function barraDeReg(reg, fat){
+  var defs = niveisDeReg(reg);
+  if(!defs.length) return "";
+  var teto = defs[defs.length-1].valor;
+  var atingido = nivelDeReg(reg, fat);
+  var largura = Math.min(100, teto>0 ? fat/teto*100 : 0);
+  var h = '<div class="nv-bar-wrap" title="R$ '+R(fat)+' de R$ '+R(teto)+' (teto: '+defs[defs.length-1].rotulo+')">';
+  h += '<div class="nv-bar-fill '+classeNivel(atingido)+'" style="width:'+largura.toFixed(1)+'%"></div>';
+  defs.forEach(function(d){
+    var pos = teto>0 ? Math.min(100, d.valor/teto*100) : 0;
+    h += '<div class="nv-marca'+(fat>=d.valor?" batido":"")+'" style="left:'+pos.toFixed(1)+'%" title="'+d.rotulo+': R$ '+R(d.valor)+'"></div>';
+  });
+  h += '</div><div class="nv-legenda">';
+  defs.forEach(function(d){
+    h += '<span class="'+(fat>=d.valor?"batido":"")+'">'+d.emoji+' '+d.curto+' R$ '+Rk(d.valor)+'</span>';
+  });
+  h += '</div>';
+  return h;
+}
+
+// ── Atalhos por vendedor ──
+function nivelAtingido(nome, lojaId, fat){ return nivelDeReg(regVendedor(nome,lojaId), fat); }
 function rotuloNivel(chave){
   if(chave==="ouro")      return "🏆 Meta Ouro atingida";
   if(chave==="superMeta") return "🟢 Super Meta atingida";
@@ -812,46 +918,14 @@ function classeNivel(chave){
   if(chave==="meta")      return "meta";
   return "abaixo";
 }
-// Níveis preenchidos, em ordem crescente — base da barra de progresso.
-function niveisDefinidos(nome, lojaId){
-  return NIVEIS.map(function(n){ return { chave: n.chave, rotulo: n.rotulo, curto: n.curto, emoji: n.emoji, valor: metaNivel(nome,lojaId,n.chave) }; })
-               .filter(function(x){ return x.valor > 0; })
-               .sort(function(a,b){ return a.valor-b.valor; });
-}
-// true quando os níveis preenchidos não estão em ordem crescente
-function niveisForaDeOrdem(nome, lojaId){
-  var vals = NIVEIS.map(function(n){ return metaNivel(nome,lojaId,n.chave); });
-  var ant = 0;
-  for(var i=0;i<vals.length;i++){
-    if(vals[i] <= 0) continue;
-    if(vals[i] <= ant) return true;
-    ant = vals[i];
-  }
-  return false;
-}
+function niveisDefinidos(nome, lojaId){ return niveisDeReg(regVendedor(nome,lojaId)); }
+function niveisForaDeOrdem(nome, lojaId){ return foraDeOrdemReg(regVendedor(nome,lojaId)); }
+function barraNiveisHTML(nome, lojaId, fat){ return barraDeReg(regVendedor(nome,lojaId), fat); }
 
-// Barra com marcadores nos pontos de meta / super / ouro
-function barraNiveisHTML(nome, lojaId, fat){
-  var defs = niveisDefinidos(nome, lojaId);
-  if(!defs.length) return "";
-  var teto = defs[defs.length-1].valor;
-  var atingido = nivelAtingido(nome, lojaId, fat);
-  var largura = Math.min(100, teto>0 ? fat/teto*100 : 0);
-  var h = '<div class="nv-bar-wrap" title="R$ '+R(fat)+' de R$ '+R(teto)+' (teto: '+defs[defs.length-1].rotulo+')">';
-  h += '<div class="nv-bar-fill '+classeNivel(atingido)+'" style="width:'+largura.toFixed(1)+'%"></div>';
-  defs.forEach(function(d){
-    var pos = teto>0 ? Math.min(100, d.valor/teto*100) : 0;
-    var ok = fat >= d.valor;
-    h += '<div class="nv-marca'+(ok?" batido":"")+'" style="left:'+pos.toFixed(1)+'%" title="'+d.rotulo+': R$ '+R(d.valor)+'"></div>';
-  });
-  h += '</div>';
-  h += '<div class="nv-legenda">';
-  defs.forEach(function(d){
-    h += '<span class="'+(fat>=d.valor?"batido":"")+'">'+d.emoji+' '+d.curto+' R$ '+Rk(d.valor)+'</span>';
-  });
-  h += '</div>';
-  return h;
-}
+// ── Atalhos por loja ──
+function nivelAtingidoLoja(lojaId, fat){ return nivelDeReg(regLoja(lojaId), fat); }
+function niveisDefinidosLoja(lojaId){ return niveisDeReg(regLoja(lojaId)); }
+function barraNiveisLojaHTML(lojaId, fat){ return barraDeReg(regLoja(lojaId), fat); }
 function lojasAtivas(){ return lojaSel==="todas" ? IDS_LOJAS : [lojaSel]; }
 function nomeLoja(lojaId){ return lojaId==="todas" ? "Todas as lojas" : (LOJAS[lojaId] ? LOJAS[lojaId].nome : lojaId); }
 function diasAbertos(lojaId){
@@ -1333,6 +1407,7 @@ function buildDashboard(){
   h += '</div>';
 
   h += melhorDaSemanaHTML();
+  h += cardLojasHTML();
 
   h += '<div class="main-grid animate">';
   h += '<div class="charts-col">';
@@ -1476,6 +1551,43 @@ function melhorDaSemanaHTML(){
   }
   h += '</div>';
   h += '</div></div>';
+  return h;
+}
+
+/* ══ CARD: PROGRESSO DAS LOJAS (só na visão "Todas") ═══════════════ */
+function cardLojasHTML(){
+  if(lojaSel !== "todas") return "";
+  if(!dados || !temPorLoja(dados)) return "";
+  var algumaComMeta = IDS_LOJAS.some(function(id){ return niveisDefinidosLoja(id).length > 0; });
+  if(!algumaComMeta) return "";
+
+  var h = '<div class="lojas-grid animate">';
+  IDS_LOJAS.forEach(function(lojaId){
+    var bloco = dados.porLoja[lojaId] || {};
+    var fat = bloco.faturamento || 0;
+    var defs = niveisDefinidosLoja(lojaId);
+    var atingido = nivelAtingidoLoja(lojaId, fat);
+    var metaBase = metaLojaNivel(lojaId, "meta");
+    var pct = metaBase > 0 ? fat/metaBase*100 : null;
+    var proximo = defs.find(function(d){ return fat < d.valor; });
+
+    h += '<div class="lj-card '+(atingido ? classeNivel(atingido) : "")+'">';
+    h += '<div class="lj-top"><div class="lj-icone">'+LOJAS[lojaId].emoji+'</div>';
+    h += '<div class="lj-id"><div class="lj-nome">'+LOJAS[lojaId].nome+'</div>';
+    h += '<div class="lj-sub">'+(bloco.pedidos||0)+' pedidos no período</div></div>';
+    h += '<div class="lj-num"><div class="lj-fat">R$ '+R(fat)+'</div>'+
+         (pct!=null ? '<div class="lj-pct">'+Math.round(pct)+'% da meta</div>' : '<div class="lj-pct">sem meta</div>')+'</div>';
+    h += '</div>';
+    if(defs.length){
+      h += '<div class="lj-badge-linha"><span class="meta-badge '+classeNivel(atingido)+'">'+rotuloNivel(atingido)+'</span>';
+      if(proximo) h += '<span class="lj-falta">faltam R$ '+R(proximo.valor-fat)+' para '+proximo.rotulo+'</span>';
+      else h += '<span class="lj-falta">todos os níveis batidos 🎉</span>';
+      h += '</div>';
+      h += barraNiveisLojaHTML(lojaId, fat);
+    }
+    h += '</div>';
+  });
+  h += '</div>';
   return h;
 }
 
@@ -2092,6 +2204,32 @@ function buildMetas(){
   if(legadoMigrado) h += '<div class="info-note cyan">ℹ️ Encontramos metas salvas em formato antigo e as trouxemos para o campo <b>Meta</b> de cada loja. Confira os valores e preencha Super Meta e Meta Ouro.</div>';
   if(!hist && !histErro) h += '<div class="info-note">⏳ Ainda aprendendo o histórico. A prévia da meta diária usa divisão simples até terminar.</div>';
 
+  // ── Meta das Lojas ──
+  h += '<div class="sec-title">🏬 Meta das Lojas <span class="hint">· objetivo da loja inteira, independente da soma dos vendedores</span></div>';
+  IDS_LOJAS.forEach(function(lojaId){
+    var fatLoja = 0;
+    if(base && base.porLoja && base.porLoja[lojaId]) fatLoja = base.porLoja[lojaId].faturamento || 0;
+    h += '<div class="meta-card">';
+    h += '<div class="meta-vendedor"><div class="mt-loja-icone">'+LOJAS[lojaId].emoji+'</div><div>'+
+         '<div class="meta-nome">'+LOJAS[lojaId].nome+'</div>'+
+         '<div class="meta-atual">'+LOJAS[lojaId].obs+' · faturamento no mês: <b style="color:var(--gold)">R$ '+R(fatLoja)+'</b></div></div></div>';
+    h += '<div class="mt-inputs">';
+    NIVEIS.forEach(function(n){
+      var id = idInputLoja(lojaId, n.chave);
+      var val = metaLojaNivel(lojaId, n.chave);
+      h += '<div class="mt-campo"><label class="f-label" for="'+id+'">'+n.emoji+' '+n.rotulo+'</label>'+
+           '<div class="mt-input-wrap"><span class="mt-prefix">R$</span>'+
+           '<input type="number" class="mt-input" id="'+id+'" value="'+(val||"")+'" placeholder="0" min="0" step="1000" '+
+           'oninput="previewMetaLoja()"></div></div>';
+    });
+    h += '</div>';
+    h += '<div id="mt-loja-status-'+lojaId+'">'+statusMetaLojaHTML(lojaId, fatLoja)+'</div>';
+    h += '</div>';
+  });
+  h += '<button class="btn-save-metas" style="margin-bottom:22px" onclick="salvarMetasLojas()">Salvar metas das lojas</button>';
+
+  h += '<div class="sec-title">👥 Meta dos Vendedores</div>';
+
   NOMES_V.forEach(function(nome){
     var fatTodas = fatV(base, nome, "todas");
     h += '<div class="meta-card">';
@@ -2124,6 +2262,64 @@ function buildMetas(){
 
   h += '<button class="btn-save-metas" style="margin-top:6px" onclick="salvarMetas()">💾 Salvar todas as metas</button>';
   el.innerHTML = h;
+}
+
+// Situação da meta da própria loja, com aviso quando a soma dos vendedores diverge
+function statusMetaLojaHTML(lojaId, fat){
+  var defs = niveisDefinidosLoja(lojaId);
+  var soma = somaMetasVendedores(lojaId);
+  var h = "";
+  if(!defs.length){
+    h += '<div class="mt-vazio">Nenhuma meta definida para esta loja.'+
+         (soma>0 ? ' Sem ela, o sistema usa a soma dos vendedores (R$ '+R(soma)+').' : '')+'</div>';
+    return h;
+  }
+  if(foraDeOrdemReg(regLoja(lojaId))){
+    h += '<div class="mt-aviso">⚠️ Os valores não estão em ordem crescente (Meta &lt; Super Meta &lt; Meta Ouro). O nível atingido é calculado pelo maior valor já batido.</div>';
+  }
+  var atingido = nivelAtingidoLoja(lojaId, fat);
+  var proximo = defs.find(function(d){ return fat < d.valor; });
+  h += '<div class="mt-status"><span class="meta-badge '+classeNivel(atingido)+'">'+rotuloNivel(atingido)+'</span>';
+  if(proximo) h += '<span class="mt-falta">faltam <b>R$ '+R(proximo.valor-fat)+'</b> para '+proximo.rotulo+'</span>';
+  else h += '<span class="mt-falta">todos os níveis batidos 🎉</span>';
+  h += '</div>';
+  h += barraNiveisLojaHTML(lojaId, fat);
+
+  // Divergência entre a meta da loja e o que foi distribuído aos vendedores
+  var metaBase = metaLojaNivel(lojaId, "meta");
+  if(metaBase > 0 && soma > 0){
+    var dif = metaBase - soma;
+    if(Math.abs(dif) >= 1){
+      h += '<div class="mt-aviso" style="color:var(--text3);background:rgba(255,255,255,0.03)">'+
+           (dif > 0
+             ? 'ℹ️ As metas dos vendedores somam R$ '+R(soma)+' — <b>R$ '+R(dif)+' abaixo</b> da meta da loja. Falta distribuir esse valor.'
+             : 'ℹ️ As metas dos vendedores somam R$ '+R(soma)+' — <b>R$ '+R(-dif)+' acima</b> da meta da loja.')+
+           '</div>';
+    }
+  }
+  return h;
+}
+
+function previewMetaLoja(){
+  coletarInputsLojas();
+  invalidarDist();
+  var base = dadosMes || dados;
+  IDS_LOJAS.forEach(function(lojaId){
+    var fat = (base && base.porLoja && base.porLoja[lojaId]) ? (base.porLoja[lojaId].faturamento||0) : 0;
+    var alvo = document.getElementById("mt-loja-status-"+lojaId);
+    if(alvo) alvo.innerHTML = statusMetaLojaHTML(lojaId, fat);
+  });
+}
+
+async function salvarMetasLojas(){
+  coletarInputsLojas();
+  persistirMetas();
+  invalidarDist();
+  buildMetas();
+  var ok = await enviarMetas(true);
+  toast(ok ? "✓ Metas das lojas salvas no servidor!"
+           : "Metas das lojas salvas neste navegador — servidor indisponível", ok ? "ok" : "err");
+  buildMetas();
 }
 
 // Linha de situação de um vendedor numa loja: nível atingido + barra
@@ -2200,13 +2396,30 @@ function fracaoDiaPara(lojaId, dataStr){
 // Lê os inputs de um vendedor para dentro de `metas` (sem persistir ainda)
 function coletarInputs(nome){
   var mudou = false;
+  if(!metas.vendedores[nome]) metas.vendedores[nome] = metasVazias().vendedores[nome] || {};
   IDS_LOJAS.forEach(function(lojaId){
+    if(!metas.vendedores[nome][lojaId]) metas.vendedores[nome][lojaId] = niveisZerados();
     NIVEIS.forEach(function(n){
       var input = document.getElementById(idInput(nome, lojaId, n.chave));
       if(!input) return;
       var val = Math.max(0, Number(input.value) || 0);
-      if(!metas[nome]) metas[nome] = metasVazias();
-      if(metas[nome][lojaId][n.chave] !== val){ metas[nome][lojaId][n.chave] = val; mudou = true; }
+      if(metas.vendedores[nome][lojaId][n.chave] !== val){ metas.vendedores[nome][lojaId][n.chave] = val; mudou = true; }
+    });
+  });
+  return mudou;
+}
+
+// Lê os inputs das metas de loja
+function idInputLoja(lojaId, nivel){ return "metaloja-" + lojaId + "-" + nivel; }
+function coletarInputsLojas(){
+  var mudou = false;
+  IDS_LOJAS.forEach(function(lojaId){
+    if(!metas.lojas[lojaId]) metas.lojas[lojaId] = niveisZerados();
+    NIVEIS.forEach(function(n){
+      var input = document.getElementById(idInputLoja(lojaId, n.chave));
+      if(!input) return;
+      var val = Math.max(0, Number(input.value) || 0);
+      if(metas.lojas[lojaId][n.chave] !== val){ metas.lojas[lojaId][n.chave] = val; mudou = true; }
     });
   });
   return mudou;
@@ -2240,6 +2453,7 @@ async function salvarMetasDe(nome){
 }
 
 async function salvarMetas(){
+  coletarInputsLojas();
   NOMES_V.forEach(coletarInputs);
   persistirMetas();
   legadoMigrado = false;
